@@ -1,0 +1,77 @@
+1) Update Kernel to 5.6 (this step-by-step tutorial is based on Ubuntu 18.04).
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.6.10/linux-headers-5.6.10-050610_5.6.10-050610.202005052301_all.deb
+wget wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.6.10/linux-image-unsigned-5.6.10-050610-generic_5.6.10-050610.202005052301_amd64.deb
+wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.6.10/linux-modules-5.6.10-050610-generic_5.6.10-050610.202005052301_amd64.deb
+dpkg -i *.deb
+
+
+2) Install eBPF dependencies
+sudo apt install clang llvm libelf-dev libpcap-dev gcc-multilib build-essential
+sudo apt install linux-perf
+sudo apt install linux-tools-$(uname -r)
+sudo apt install linux-tools-common linux-tools-generic
+sudo apt-get install libz-dev
+
+
+3) Clone libebpf project and build it:
+git clone https://github.com/libbpf/libbpf.git
+cd src/
+make
+
+
+4) Clone XDP-Tutorial into libbpf directoty
+cd /root/libbpf/
+git clone https://github.com/xdp-project/xdp-tutorial.git
+git submodule update --init
+
+5) Mount eBPF filesystem. This is required by applications using Maps.
+mount -t bpf bpf/sys/fs/bpf/
+
+
+6) Check GRUB configuration. Copy-and-past grub conf.
+
+
+#A partir daqui deixa para depois:
+
+7) Compiling eBPF router application We are using the XDP-tutorial-based router in our setup. It is located at ./xdp-project/packet-03. To compile this application, just run Make inside the directory. If anything goes wrong, please check the previous steps. At this point, everything is already installed. However, other Linux distros may have additional dependencies.
+
+
+8) Loading the eBPF application to the NIC's driver. 
+a) Check if the IXGBE driver is properly loaded and attached to the NICs (ethtool -i DEV). 
+
+b) Ensure that bpf is mounted:
+mount -t bpf bpf/sys/fs/bpf/ 
+
+c) Attach xdp_router code to both interfaces
+./xdp_loader -d eno1 -F — progsec xdp_router 
+./xdp_loader -d eno2 -F — progsec xdp_router 
+
+d) Populate redirect_params maps. Before doing this step, please make sure that all routes rules are already in the kernel forwarding table (see using route -n).
+./xdp_prog_user -d eno1 
+./xdp_prog_user -d eno4 
+
+
+9) At this point, the eBPF/XDP router is up and running. We tested using MoonGen unidirectional 64B-packet traffic.
+  tx/rx: 512
+  queue:8
+  Obtained PPS: 3.5Mpps
+  no-tuning-irq
+  tx/rx: 4096
+  queue:8
+  Obtained PPS: 4.8Mpps
+  no-tuning-irq
+  tx/rx: 4096
+  queue:4
+  Obtained PPS: 8.5Mpps
+  tuning-irq ->         ./irq_set.sh 4-7 enp8s0f1
+  			  ./irq_set.sh 0-3 enp8s0f0
+10) Environment setup. Our DUT (eBPF router) has two interfaces (enp8s0f0/11.11.11.1 and enp8s0f1/12.12.12.1) with IPv4 forwarding enabled.
+
+ sysctl -w net.ipv4.ip_forward=1 
+We also have set two routing rules in order to move the network traffic in both directions to subnets 11 and 12
+
+ ... 
+11) MoonGen script. Note that the destination MAC address should be set to the incoming interface in the eBPF router. Also, the destination IP address and the corresponding MAC should be in the ARP table. If not, please add it manually.
+
+ ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 1 --dst-ip 11.11.11.2 --dst-ip-ry 0.0.0.0 --dst-mac 00:1b:21:8d:11:b5 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 12.12.12.2 --src-ip-vary 0.0.0.255 
+12) Before setting the eBPF environment, we advice to check first if the routing is properly working.
