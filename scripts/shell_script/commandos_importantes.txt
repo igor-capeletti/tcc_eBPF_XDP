@@ -2,6 +2,33 @@ namespace	-->	interfaces de rede
 ns1 		--> 	   eno1 e eno2
 ns2 		--> 	 ens2f0 e ens2f1
 
+-----Materiais de apoio----------------------------------------------------------------------
+Exemplos de carregamento de programas eBPF: Page 13
+
+
+
+
+
+-----Compilando codigos eBPF nos 3 modos (generico, nativo e offload):-----------------------
+
+#compila o codigo em C para eBPF
+clang -target bpf -O2 -c [$xdp.c] -o xdp.o
+
+#carregar e descarregar programa eBPF em modo generico:
+ip -force link set dev [DEV] xdpgeneric obj xdp.o sec .text
+ip link set dev [DEV] xdpgeneric off
+
+#carregar e descarregar programa eBPF em modo nativo:
+ip -force link set dev [DEV] xdpdrv obj xdp.o sec .text
+ip link set dev [DEV] xdpdrv off
+
+#carregar e descarregar programa eBPF em modo offload(placa Netronome):
+ip -force link set dev [DEV] xdpoffload obj xdp.o sec .text
+ip link set dev [DEV] xdpoffload off
+
+
+
+
 -----Comandos importantes----------------------------------------------------------------------
 #criar namespaces
 ip netns add ns1

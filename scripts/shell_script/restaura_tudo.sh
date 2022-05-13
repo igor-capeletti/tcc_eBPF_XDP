@@ -12,5 +12,5 @@ ip netns del ns1
 ip netns del ns2
 
 
-sleep 2
+sleep 3
 ifconfig
