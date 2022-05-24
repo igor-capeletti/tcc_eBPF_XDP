@@ -25,7 +25,7 @@ git clone https://github.com/xdp-project/xdp-tutorial.git
 git submodule update --init
 
 5) Mount eBPF filesystem. This is required by applications using Maps.
-mount -t bpf bpf/sys/fs/bpf/
+mount -t bpf bpf /sys/fs/bpf/
 
 
 6) Check GRUB configuration. Copy-and-past grub conf.
