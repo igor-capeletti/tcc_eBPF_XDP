@@ -1,21 +1,48 @@
 #Exemplos para executar este script:
-#bash executa_experimentos.sh 4 test_basic01 default
-#bash executa_experimentos.sh 4 test_basic02 default
-#bash executa_experimentos.sh 4 test_basic03 default
-#bash executa_experimentos.sh 4 test_basic04 default
-#bash executa_experimentos.sh 4 test_packet01 default
-#bash executa_experimentos.sh 4 test_packet02 default
-#bash executa_experimentos.sh 4 test_packet03 default
+#<arquivo> <qtd interfaces> <pasta do programa BPF> <tipo execucao> <secao>
+
+#basic01: 
+#bash executa_experimentos.sh 4 basic01-xdp-pass 1 xdp
+
+#basic02:
+#bash executa_experimentos.sh 4 basic02-prog-by-name 1 xdp_pass
+#bash executa_experimentos.sh 4 basic02-prog-by-name 1 xdp_drop
+
+#basic03:
+#bash executa_experimentos.sh 4 basic03-map-counter 1 xdp_stats1
+
+#basic04:
+#bash executa_experimentos.sh 4 basic04-pinning-maps 1 xdp_pass
+#bash executa_experimentos.sh 4 basic04-pinning-maps 1 xdp_drop
+#bash executa_experimentos.sh 4 basic04-pinning-maps 1 xdp_abort
+
+#packet01
+#bash executa_experimentos.sh 4 packet01-parsing 1 xdp_packet_parser
+
+
+#falta arrumar
+#bash executa_experimentos.sh 4 packet02-rewriting 1 default
+#bash executa_experimentos.sh 4 packet03-redirecting 1 default
+
 
 #variaveis globais do script ---------------
 tipo_rede=$1
 programa_bpf=$2
 tipo_exec_prog=$3
+secao_exec=$4
 endsubrede1I="10.10.10.10/24"
 endsubrede1O="10.10.10.11/24"
 endsubrede2I="10.10.10.20/24"
 endsubrede2O="10.10.10.21/24"
 #-------------------------------------------
+
+#exibe informações da execução do script
+echo -e "\n\n\nExecução do experimento: -------------------"
+echo "Rede com $tipo_rede interfaces"
+echo "Pasta do Programa BPF: $programa_bpf"
+echo "Forma de execução: $tipo_exec_prog"
+echo "Seção de execução: $secao_exec"
+echo -e "--------------------------------------------\n\n\n"
 
 #desabilita todos os programas xdp das interfaces de rede
 ip netns exec ns2 ip link set dev ens2f0 xdpgeneric off
@@ -25,15 +52,18 @@ ip netns exec ns2 ip link set dev ens2f0 xdpgeneric off
 
 #ip netns exec ns2 ip link set dev eno2 xdpgeneric off
 
+
 #derruba interfaces de rede em cada namespace
 ip netns exec ns1 ip link set dev eno1 down
 ip netns exec ns1 ip link set dev eno2 down
 ip netns exec ns2 ip link set dev ens2f0 down
 ip netns exec ns2 ip link set dev ens2f1 down
 
+
 #deleta namespaces criados
 ip netns del ns1
 ip netns del ns2
+
 
 #cria namespaces
 ip netns add ns1
@@ -42,9 +72,7 @@ ip netns add ns2
 
 #configuracao das interfaces de rede
 if [ $tipo_rede = "2" ]; then
-    #echo "numero 2"
-
-    #seta interfaces de rede para namespaces
+    #seta interfaces de rede nas namespaces
     ip link set eno1 netns ns1
     ip link set eno2 netns ns2
 
@@ -57,8 +85,6 @@ if [ $tipo_rede = "2" ]; then
     ip netns exec ns2 ifconfig eno2 $endsubrede2I up
 
 elif [ $tipo_rede = "4" ]; then
-    #echo "numero 4 "
-
     #seta interfaces de rede para namespaces
     ip link set eno1 netns ns1
     ip link set eno2 netns ns1
@@ -71,7 +97,6 @@ elif [ $tipo_rede = "4" ]; then
     ip netns exec ns2 ip link set dev ens2f0 up
     ip netns exec ns2 ip link set dev ens2f1 up
 
-
     #seta ip para cada interface de rede de namespace especificas
     ip netns exec ns1 ifconfig eno1 $endsubrede1I up
     ip netns exec ns1 ifconfig eno2 $endsubrede1O up
@@ -80,25 +105,22 @@ elif [ $tipo_rede = "4" ]; then
 
 fi
 
-#abre pasta do programa BPF
-cd $programa_bpf
+cd /home/igorcapeletti/libbpf/xdp-tutorial/"$programa_bpf"
 
-#exibe informações da execução do script
-echo -e "\n\n\nExecução do experimento: -------------------"
-echo "Rede com $tipo_rede interfaces"
-echo "Programa: $programa_bpf"
-echo "Forma de execução: $tipo_exec_prog"
-echo -e "--------------------------------------------\n\n\n"
+#remover programa xdp da interface de rede
+ip netns exec ns2 ip link set dev ens2f0 xdpgeneric off
 
-#falta arrumar forma de executar o programa BPF
-#daqui para baixo está funcionando mas falta adicionar 
-#segunda opcao de execucao dos programas eBPF -----
+if [ $tipo_exec_prog = "1" ]; then
+    make
+    llvm-objdump -S xdp_prog_kern.o
+    
+    #ativar programa ebpf na interface ens2f0
+    ip netns exec ns2 ip link set dev ens2f0 xdpgeneric obj xdp_prog_kern.o sec $secao_exec
 
-#compila, carrega e executa programa eBPF para interface de rede especificada neste outro script
-bash comp_exec_prog_ebpf.sh
+elif [ $tipo_exec_prog = "2" ]; then
+    ip netns exec ns2 ./xdp_loader --dev ens2f0 --force --progsec $secao_exec --auto-mode
 
-#abre novo termnal para testes
-#gnome-terminal
+fi
 
-
-
+#visualizar informacao da interface de rede
+ip netns exec ns2 ip link show
