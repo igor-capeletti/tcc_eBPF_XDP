@@ -1,0 +1,44 @@
+## PASSO 1 ## (ao começar trabalhar nos arquivos)
+	#Carregar atualizações do repositório remoto para o atualizar os arquivos e diretórios do repositório local atual:
+	git pull
+
+	
+
+
+## PASSO 2 ## (ao alterar algum arquivo ou diretório)
+	#verificar status dos arquivos alterados do projeto do git:
+	git status
+
+	#se preisar remover um arquivo do repositório remoto
+	git rm meu_arquivo.txt
+
+	#se preisar remover um diretório e os subdiretórios do repositório remoto:
+	git rm -r diretorio
+	
+	#Comitar um arquivo ou pasta com mensagem
+	git commit meuarquivo.txt -m "minha mensagem de commit"
+
+
+## PASSO 3 ## (
+	#verificar status dos arquivos alterados do projeto do git:
+	git status
+	
+	#se aparecer algum alerta executar PASSO 2
+	
+	#se nenhum alerta aparecer:
+	git push
+	
+
+
+## PASSO Primeira vez ao carregar o repositório ##
+
+
+	#clonar repositório:
+	git clone git@github.com:igor-capeletti/tcc_eBPF_XDP.git
+
+	#configurar email para trabalhar no repositório:
+	git config --global user.email "<seu_email_git>"
+
+
+	#configurar usuario para trabalhar no repositório:
+	git config --global user.name "<seu_user_git>"
