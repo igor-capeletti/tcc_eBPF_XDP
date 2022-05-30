@@ -1,0 +1,25 @@
+1-começar executar AF_XDP:
+cd libbpf/xdp-tutorial/testenv/
+
+2-configurar o ambiente do laboratório de teste:
+eval $(../testenv/testenv.sh alias)
+
+3-Criar nova interface de rede para fazer os testes:
+t setup --name veth-adv03
+
+4-Ver nova interface de rede habilitada no sistema:
+ifconfig
+#ou
+ip link show
+
+5-Executar ping infinito com pacotes IPv6:
+t ping
+
+6-Abrir mais um terminal paralelo com sudo e entrar na pasta do programa eBPF que irá ser executado no AF_XDP:
+cd /libbpf/xdp-tutorial/advanced03-AF_XDP/
+
+7-Compilar o programa eBPF:
+make
+
+8-Carregar programa eBPF para a interface criada e executar para consumir os pacotes da interface:
+sudo ./af_xdp_user -d veth-adv03
