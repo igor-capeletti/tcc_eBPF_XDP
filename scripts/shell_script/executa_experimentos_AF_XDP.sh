@@ -1,7 +1,12 @@
 
 
 #exemplo de execucao:
+#para trabalhar com ipv4:
 #bash executa_experimentos_AF_XDP.sh igorubuntu ens2f0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o
+
+#para trabalhar com ipv6
+#bash executa_experimentos_AF_XDP.sh igorubuntu enp4s0f1 "2002:1:1:1:0:0:0:2" "/64" "2002:1:1:1:0:0:0:1" af_xdp_kern.o
+
 
 #variaveis globais do script ---------------
 user=$1
@@ -15,12 +20,15 @@ nome_interface=$2
 
 
 end_ipv4_interface=$3
+end_ipv6_interface=$3
 #end_ipv4_interface="10.10.10.10"
 
-mask_24=$4
+mask_ipv4=$4
+mask_ipv6=$4
 #mask_24="/24"
 
 end_ipv4_gerador=$5
+end_ipv6_gerador=$5
 
 programa_bpf=$6
 
@@ -43,18 +51,19 @@ ip link set dev $nome_interface down
 ip link set dev $nome_interface up
 
 #configura endereco IPv4 na interface
-ifconfig $nome_interface $end_ipv4_interface$mask_24 up
+#ifconfig $nome_interface $end_ipv4_interface$mask_ipv4 up
+ifconfig $nome_interface $end_ipv6_interface$mask_ipv6 up
 
 #falta configurar endereco IPv6 na interface
 
 
 #definir rota dos pacotes para serem redirecionados e devolvidos
-route add default gw $end_ipv4_gerador $nome_interface
+route add default gw $end_ipv6_gerador $nome_interface
 #ou
 #route add default gw $end_ipv4_interface $nome_interface
 
 #adicionar redirecionamento
-echo 1 > /proc/sys/net/ipv4/ip_forward
+#echo 1 > /proc/sys/net/ipv4/ip_forward
 
 #entra na pasta do programa BPF que executa AF_XDP
 cd /home/$user/libbpf/xdp-tutorial/advanced03-AF_XDP
