@@ -204,7 +204,7 @@ static struct xsk_socket_info *xsk_configure_socket(struct config *cfg,
 
 	xsk_info->umem_frame_free = NUM_FRAMES;
 
-	/* Stuff the receive path with buffers, we assume we have enough */
+	/* Preencha o caminho de recebimento com buffers, assumimos que temos o suficiente */
 	ret = xsk_ring_prod__reserve(&xsk_info->umem->fq,
 				     XSK_RING_PROD__DEFAULT_NUM_DESCS,
 				     &idx);
@@ -237,7 +237,7 @@ static void complete_tx(struct xsk_socket_info *xsk)
 	sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
 
 
-	/* Collect/free completed TX buffers */
+	/* Coletar/liberar buffers de TX concluídos */
 	completed = xsk_ring_cons__peek(&xsk->umem->cq,
 					XSK_RING_CONS__DEFAULT_NUM_DESCS,
 					&idx_cq);
@@ -277,14 +277,15 @@ static bool process_packet(struct xsk_socket_info *xsk,
 {
 	uint8_t *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
 
-        /* Lesson#3: Write an IPv6 ICMP ECHO parser to send responses
-	 *
-	 * Some assumptions to make it easier:
-	 * - No VLAN handling
-	 * - Only if nexthdr is ICMP
-	 * - Just return all data with MAC/IP swapped, and type set to
-	 *   ICMPV6_ECHO_REPLY
-	 * - Recalculate the icmp checksum */
+        /* Lição nº 3: Escreva um analisador IPv6 ICMP ECHO para enviar respostas 
+				* 
+				* Algumas suposições para facilitar: 
+				* - Sem manipulação de VLAN 
+				* - Somente se nexthdr for ICMP 
+				* - Apenas retorne todos os dados com troca de MAC/IP e digite definido como 
+				* ICMPV6_ECHO_REPLY 
+				* - Recalcular a soma de verificação icmp
+ 				*/
 
 	if (false) {
 		int ret;
@@ -315,13 +316,15 @@ static bool process_packet(struct xsk_socket_info *xsk,
 			      htons(ICMPV6_ECHO_REQUEST << 8),
 			      htons(ICMPV6_ECHO_REPLY << 8));
 
-		/* Here we sent the packet out of the receive port. Note that
-		 * we allocate one entry and schedule it. Your design would be
-		 * faster if you do batch processing/transmission */
+		/* Aqui nós enviamos o pacote para fora da porta de recebimento. Observe que 
+		* alocamos uma entrada e a agendamos. Seu design seria 
+		* mais rápido se você fizer processamento/transmissão em lote 
+		*/
+
 
 		ret = xsk_ring_prod__reserve(&xsk->tx, 1, &tx_idx);
 		if (ret != 1) {
-			/* No more transmit slots, drop the packet */
+			/* Não há mais slots de transmissão, descarte o pacote */
 			return false;
 		}
 
@@ -348,7 +351,7 @@ static void handle_receive_packets(struct xsk_socket_info *xsk)
 	if (!rcvd)
 		return;
 
-	/* Stuff the ring with as much frames as possible */
+	/* Encha o anel com o máximo de frames possível */
 	stock_frames = xsk_prod_nb_free(&xsk->umem->fq,
 					xsk_umem_free_frames(xsk));
 
@@ -357,7 +360,7 @@ static void handle_receive_packets(struct xsk_socket_info *xsk)
 		ret = xsk_ring_prod__reserve(&xsk->umem->fq, stock_frames,
 					     &idx_fq);
 
-		/* This should not happen, but just in case */
+		/* Isso não deve acontecer, mas apenas no caso */
 		while (ret != stock_frames)
 			ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd,
 						     &idx_fq);
@@ -369,7 +372,7 @@ static void handle_receive_packets(struct xsk_socket_info *xsk)
 		xsk_ring_prod__submit(&xsk->umem->fq, stock_frames);
 	}
 
-	/* Process received packets */
+	/* Processa os pacotes recebidos */
 	for (i = 0; i < rcvd; i++) {
 		uint64_t addr = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx)->addr;
 		uint32_t len = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++)->len;
@@ -383,7 +386,7 @@ static void handle_receive_packets(struct xsk_socket_info *xsk)
 	xsk_ring_cons__release(&xsk->rx, rcvd);
 	xsk->stats.rx_packets += rcvd;
 
-	/* Do we need to wake up the kernel for transmission */
+	/* Precisamos acordar o kernel para transmissão */
 	complete_tx(xsk);
   }
 
@@ -480,7 +483,7 @@ static void *stats_poll(void *arg)
 
 	previous_stats.timestamp = gettime();
 
-	/* Trick to pretty printf with thousands separators use %' */
+	/* Truque para printf bonito com separadores de milhares use %' */
 	setlocale(LC_NUMERIC, "en_US");
 
 	while (!global_exit) {
@@ -516,10 +519,10 @@ int main(int argc, char **argv)
 	struct bpf_object *bpf_obj = NULL;
 	pthread_t stats_poll_thread;
 
-	/* Global shutdown handler */
+	/* Manipulador de desligamento global */
 	signal(SIGINT, exit_application);
 
-	/* Cmdline options can change progsec */
+	/* Opções de cmdline podem mudar progsec */
 	parse_cmdline_args(argc, argv, long_options, &cfg, __doc__);
 
 	/* Required option */
@@ -529,21 +532,21 @@ int main(int argc, char **argv)
 		return EXIT_FAIL_OPTION;
 	}
 
-	/* Unload XDP program if requested */
+	/* Descarrega o programa XDP se solicitado */
 	if (cfg.do_unload)
 		return xdp_link_detach(cfg.ifindex, cfg.xdp_flags, 0);
 
-	/* Load custom program if configured */
+	/* Carrega o programa personalizado se configurado */
 	if (cfg.filename[0] != 0) {
 		struct bpf_map *map;
 
 		bpf_obj = load_bpf_and_xdp_attach(&cfg);
 		if (!bpf_obj) {
-			/* Error handling done in load_bpf_and_xdp_attach() */
+			/* Tratamento de erros feito em load_bpf_and_xdp_attach() */
 			exit(EXIT_FAILURE);
 		}
 
-		/* We also need to load the xsks_map */
+		/* Também precisamos carregar o xsks_map */
 		map = bpf_object__find_map_by_name(bpf_obj, "xsks_map");
 		xsks_map_fd = bpf_map__fd(map);
 		if (xsks_map_fd < 0) {
@@ -553,16 +556,15 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Allow unlimited locking of memory, so all memory needed for packet
-	 * buffers can be locked.
-	 */
+	/* Permite bloqueio ilimitado de memória, para que toda a memória necessária para buffers de pacote 
+	* possa ser bloqueada. */
 	if (setrlimit(RLIMIT_MEMLOCK, &rlim)) {
 		fprintf(stderr, "ERROR: setrlimit(RLIMIT_MEMLOCK) \"%s\"\n",
 			strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	/* Allocate memory for NUM_FRAMES of the default XDP frame size */
+	/* Alocar memória para NUM_FRAMES do tamanho de quadro XDP padrão */
 	packet_buffer_size = NUM_FRAMES * FRAME_SIZE;
 	if (posix_memalign(&packet_buffer,
 			   getpagesize(), /* PAGE_SIZE aligned */
@@ -572,7 +574,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	/* Initialize shared packet_buffer for umem usage */
+	/* Inicializa o packet_buffer compartilhado para uso do umem */
 	umem = configure_xsk_umem(packet_buffer, packet_buffer_size);
 	if (umem == NULL) {
 		fprintf(stderr, "ERROR: Can't create umem \"%s\"\n",
@@ -580,7 +582,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	/* Open and configure the AF_XDP (xsk) socket */
+	/* Abre e configura o socket AF_XDP (xsk) */
 	xsk_socket = xsk_configure_socket(&cfg, umem);
 	if (xsk_socket == NULL) {
 		fprintf(stderr, "ERROR: Can't setup AF_XDP socket \"%s\"\n",
@@ -588,7 +590,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	/* Start thread to do statistics display */
+	/* Inicia o thread para exibir as estatísticas */
 	if (verbose) {
 		ret = pthread_create(&stats_poll_thread, NULL, stats_poll,
 				     xsk_socket);
@@ -599,10 +601,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Receive and count packets than drop them */
+	/* Recebe e conta pacotes do que os descarta */
 	rx_and_process(&cfg, xsk_socket);
 
-	/* Cleanup */
+	/* Limpa */
 	xsk_socket__delete(xsk_socket->xsk);
 	xsk_umem__delete(umem->umem);
 	xdp_link_detach(cfg.ifindex, cfg.xdp_flags, 0);
