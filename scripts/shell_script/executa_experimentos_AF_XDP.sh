@@ -58,8 +58,10 @@ ifconfig $nome_interface $end_ipv4_interface$mask_ipv4 up
 
 
 #definir rota dos pacotes para serem redirecionados e devolvidos
-route add default gw $end_ipv4_interface $nome_interface
+#route add default gw $end_ipv4_interface $nome_interface
+#route add default gw $end_ipv6_interface $nome_interface
 #ou
+#route add default gw $end_ipv4_gerador $nome_interface
 #route add default gw $end_ipv6_gerador $nome_interface
 
 
@@ -73,10 +75,10 @@ cd /home/$user/libbpf/xdp-tutorial/advanced03-AF_XDP
 make
 
 #ativa AF_XDP na interface escolhida
-sudo ./af_xdp_user -d $nome_interface
+#sudo ./af_xdp_user -d $nome_interface
 
 #ativa AF_XDP na interface escolhida e executa programa eBPF para retornar os pacotes que chegam na interface
-#sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
+sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
 
 
 

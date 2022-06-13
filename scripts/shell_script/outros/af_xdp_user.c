@@ -22,8 +22,8 @@
 #include <net/if.h>
 #include <linux/if_link.h>
 #include <linux/if_ether.h>
-#include <linux/ipv6.h>
-#include <linux/icmpv6.h>
+#include <linux/ip.h>
+#include <linux/icmp.h>
 
 
 #include "../common/common_params.h"
@@ -280,52 +280,51 @@ static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t 
 		int ret;
 		uint32_t tx_idx = 0;
 		uint8_t tmp_mac[ETH_ALEN];
-		struct in6_addr tmp_ip;
+		struct in_addr tmp_ip;
 		struct ethhdr *eth = (struct ethhdr *) pkt;
-		struct ipv6hdr *ipv6 = (struct ipv6hdr *) (eth + 1);
-		struct icmp6hdr *icmp = (struct icmp6hdr *) (ipv6 + 1);
+		struct iphdr *ipv4 = (struct iphdr *) (eth + 1);
+		struct icmphdr *icmp = (struct icmphdr *) (ipv4 + 1);
 
-		if (ntohs(eth->h_proto) != ETH_P_IPV6 ||
-		    len < (sizeof(*eth) + sizeof(*ipv6) + sizeof(*icmp)) ||
-		    ipv6->nexthdr != IPPROTO_ICMPV6 ||
-		    icmp->icmp6_type != ICMPV6_ECHO_REQUEST)
-			return false;
+		printf("recebeu\n");
 
 		memcpy(tmp_mac, eth->h_dest, ETH_ALEN);
 		memcpy(eth->h_dest, eth->h_source, ETH_ALEN);
 		memcpy(eth->h_source, tmp_mac, ETH_ALEN);
 
-		memcpy(&tmp_ip, &ipv6->saddr, sizeof(tmp_ip));
-		memcpy(&ipv6->saddr, &ipv6->daddr, sizeof(tmp_ip));
-		memcpy(&ipv6->daddr, &tmp_ip, sizeof(tmp_ip));
+		memcpy(&tmp_ip, &ipv4->saddr, sizeof(tmp_ip));
+		memcpy(&ipv4->saddr, &ipv4->daddr, sizeof(tmp_ip));
+		memcpy(&ipv4->daddr, &tmp_ip, sizeof(tmp_ip));
 
-		icmp->icmp6_type = ICMPV6_ECHO_REPLY;
+		icmp->type = ICMP_ECHOREPLY;
 
-		csum_replace2(&icmp->icmp6_cksum,
-			      htons(ICMPV6_ECHO_REQUEST << 8),
-			      htons(ICMPV6_ECHO_REPLY << 8));
+		/*
+		int i=0;
+		for(i=0; i< 1000000; i++){
+			icmp->type = ICMP_ECHOREPLY;
+		}
+		*/
 
-	
-
+		csum_replace2(&icmp->checksum, htons(ICMP_ECHO << 8), htons(ICMP_ECHOREPLY << 8));
 		ret = xsk_ring_prod__reserve(&xsk->tx, 1, &tx_idx);
 		if (ret != 1) {
+			printf("deu erro\n");
 			return false;
 		}
-		int i=0;
-		for(i=0; i< 10000000; i++){
-			icmp->icmp6_type = ICMPV6_ECHO_REPLY;
-		}
-
+		
 		xsk_ring_prod__tx_desc(&xsk->tx, tx_idx)->addr = addr;
 		xsk_ring_prod__tx_desc(&xsk->tx, tx_idx)->len = len;
+
+		printf(" enviou\n");
 		xsk_ring_prod__submit(&xsk->tx, 1);
 		xsk->outstanding_tx++;
-
 		xsk->stats.tx_bytes += len;
 		xsk->stats.tx_packets++;
+
+		printf("  finalizou\n\n");
 		return true;
 	}
 
+	printf("deu erro\n");
 	return false;
 }
 
@@ -434,7 +433,7 @@ static void stats_print(struct stats_record *stats_rec,
 
 	char *fmt = "%-12s %'11lld pkts (%'10.0f pps)"
 		" %'11lld Kbytes (%'6.0f Mbits/s)"
-		" period:%f  teste_Igor\n";
+		" period:%f\n";
 
 	period = calc_period(stats_rec, stats_prev);
 	if (period == 0)
@@ -460,7 +459,7 @@ static void stats_print(struct stats_record *stats_rec,
 	       stats_rec->tx_bytes / 1000 , bps,
 	       period);
 
-	printf("\n");
+	//printf("\n");
 }
 
 static void *stats_poll(void *arg)
