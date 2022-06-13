@@ -272,22 +272,11 @@ static inline void csum_replace2(__sum16 *sum, __be16 old, __be16 new)
 	*sum = ~csum16_add(csum16_sub(~(*sum), old), new);
 }
 
-static bool process_packet(struct xsk_socket_info *xsk,
-			   uint64_t addr, uint32_t len)
-{
+/*Funcao que faz o tratamento dos pacotes recebidos no espaço do usuário*/
+static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t len){
 	uint8_t *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
 
-        /* Lição nº 3: Escreva um analisador IPv6 ICMP ECHO para enviar respostas 
-				* 
-				* Algumas suposições para facilitar: 
-				* - Sem manipulação de VLAN 
-				* - Somente se nexthdr for ICMP 
-				* - Apenas retorne todos os dados com troca de MAC/IP e digite definido como 
-				* ICMPV6_ECHO_REPLY 
-				* - Recalcular a soma de verificação icmp
- 				*/
-
-	if (false) {
+	if (true) {
 		int ret;
 		uint32_t tx_idx = 0;
 		uint8_t tmp_mac[ETH_ALEN];
@@ -316,16 +305,15 @@ static bool process_packet(struct xsk_socket_info *xsk,
 			      htons(ICMPV6_ECHO_REQUEST << 8),
 			      htons(ICMPV6_ECHO_REPLY << 8));
 
-		/* Aqui nós enviamos o pacote para fora da porta de recebimento. Observe que 
-		* alocamos uma entrada e a agendamos. Seu design seria 
-		* mais rápido se você fizer processamento/transmissão em lote 
-		*/
-
+	
 
 		ret = xsk_ring_prod__reserve(&xsk->tx, 1, &tx_idx);
 		if (ret != 1) {
-			/* Não há mais slots de transmissão, descarte o pacote */
 			return false;
+		}
+		int i=0;
+		for(i=0; i< 10000000; i++){
+			icmp->icmp6_type = ICMPV6_ECHO_REPLY;
 		}
 
 		xsk_ring_prod__tx_desc(&xsk->tx, tx_idx)->addr = addr;
