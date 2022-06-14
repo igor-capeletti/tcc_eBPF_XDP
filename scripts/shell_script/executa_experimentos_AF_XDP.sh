@@ -73,10 +73,10 @@ cd /home/$user/libbpf/xdp-tutorial/advanced03-AF_XDP
 make
 
 #ativa AF_XDP na interface escolhida
-sudo ./af_xdp_user -d $nome_interface
+#sudo ./af_xdp_user -d $nome_interface
 
 #ativa AF_XDP na interface escolhida e executa programa eBPF para retornar os pacotes que chegam na interface
-#sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
+sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
 
 
 
