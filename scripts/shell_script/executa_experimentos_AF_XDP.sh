@@ -2,7 +2,7 @@
 
 #exemplo de execucao:
 #para trabalhar com ipv4:
-#bash executa_experimentos_AF_XDP.sh igorubuntu ens2f0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o
+#bash executa_experimentos_AF_XDP.sh igorcapeletti ens2f0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o
 
 #para trabalhar com ipv6
 #bash executa_experimentos_AF_XDP.sh igorubuntu enp4s0f1 "2002:1:1:1:0:0:0:2" "/64" "2002:1:1:1:0:0:0:1" af_xdp_kern.o
@@ -61,7 +61,7 @@ ifconfig $nome_interface $end_ipv4_interface$mask_ipv4 up
 #route add default gw $end_ipv4_interface $nome_interface
 #route add default gw $end_ipv6_interface $nome_interface
 #ou
-#route add default gw $end_ipv4_gerador $nome_interface
+route add default gw $end_ipv4_gerador $nome_interface
 #route add default gw $end_ipv6_gerador $nome_interface
 
 

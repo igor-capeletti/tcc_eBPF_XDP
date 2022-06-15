@@ -61,6 +61,7 @@ ip netns exec ns2 ip link set dev ens2f0 xdpgeneric off
 
 #verifica rota das interfaces dos namespaces
 ip netns exec ns1 route -n
+
 ip netns exec ns2 route -n
 
 sudo ip netns exec ns2 ./xdp_loader -d ens2f0 --force --auto-mode

@@ -287,6 +287,7 @@ static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t 
 
 		printf("recebeu\n");
 
+		
 		memcpy(tmp_mac, eth->h_dest, ETH_ALEN);
 		memcpy(eth->h_dest, eth->h_source, ETH_ALEN);
 		memcpy(eth->h_source, tmp_mac, ETH_ALEN);
@@ -294,15 +295,18 @@ static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t 
 		memcpy(&tmp_ip, &ipv4->saddr, sizeof(tmp_ip));
 		memcpy(&ipv4->saddr, &ipv4->daddr, sizeof(tmp_ip));
 		memcpy(&ipv4->daddr, &tmp_ip, sizeof(tmp_ip));
+		
 
 		icmp->type = ICMP_ECHOREPLY;
 
-		/*
+		
+		
 		int i=0;
 		for(i=0; i< 1000000; i++){
 			icmp->type = ICMP_ECHOREPLY;
 		}
-		*/
+		
+		
 
 		csum_replace2(&icmp->checksum, htons(ICMP_ECHO << 8), htons(ICMP_ECHOREPLY << 8));
 		ret = xsk_ring_prod__reserve(&xsk->tx, 1, &tx_idx);
