@@ -295,11 +295,15 @@ static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t 
 		memcpy(&tmp_ip, &ipv4->saddr, sizeof(tmp_ip));
 		memcpy(&ipv4->saddr, &ipv4->daddr, sizeof(tmp_ip));
 		memcpy(&ipv4->daddr, &tmp_ip, sizeof(tmp_ip));
+<<<<<<< HEAD
 		
+=======
+>>>>>>> f14e18e9fd114d5178b8fd0afd045e8751465d9a
 
 		icmp->type = ICMP_ECHOREPLY;
 
 		
+<<<<<<< HEAD
 		
 		int i=0;
 		for(i=0; i< 1000000; i++){
@@ -307,6 +311,15 @@ static bool process_packet(struct xsk_socket_info *xsk, uint64_t addr, uint32_t 
 		}
 		
 		
+=======
+		int i=0;
+		int j=0;
+		for(i=0; i< 10000000; i++){
+			//icmp->type = ICMP_ECHOREPLY;
+			j= i;
+		}
+		
+>>>>>>> f14e18e9fd114d5178b8fd0afd045e8751465d9a
 
 		csum_replace2(&icmp->checksum, htons(ICMP_ECHO << 8), htons(ICMP_ECHOREPLY << 8));
 		ret = xsk_ring_prod__reserve(&xsk->tx, 1, &tx_idx);
