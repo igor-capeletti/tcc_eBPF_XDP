@@ -2,6 +2,7 @@
 
 #exemplo de execucao:
 #para trabalhar com ipv4:
+#       nome_arquivo                    usuario     iface   IP-iface    mask     IP_gerador  progama_ebpf
 #bash executa_experimentos_AF_XDP.sh igorcapeletti ens2f0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o
 
 #para trabalhar com ipv6
