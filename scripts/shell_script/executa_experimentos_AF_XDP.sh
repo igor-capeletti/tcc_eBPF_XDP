@@ -18,6 +18,10 @@ nome_interface=$2
 #nome_interface="eno2"      #iface lab igor
 #nome_interface="ens2f0"    #iface lab igor
 #nome_interface="ens2f1"    #iface lab igor
+#nome_interface="ens2np0"    #iface lab igor netronome
+#nome_interface="ens2np1"    #iface lab igor netronome
+
+
 
 
 end_ipv4_interface=$3
@@ -77,6 +81,7 @@ make
 
 #ativa AF_XDP na interface escolhida
 #sudo ./af_xdp_user -d $nome_interface
+#sudo ./af_xdp_user -d $nome_interface --auto-mode
 
 #ativa AF_XDP na interface escolhida e executa programa eBPF para retornar os pacotes que chegam na interface
 sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
