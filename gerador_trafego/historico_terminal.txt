@@ -1,0 +1,197 @@
+    1  uname -r
+    2  ping 8.8.8.8
+    3  adduser mcluizelli
+    4  usermod -aG sudo mcluizelli
+    5  apt-get git
+    6  apt-get install git
+    7  apt-get update
+    8  apt-get install git
+    9  git clone https://github.com/emmericp/MoonGen.git
+   10  sudo apt-get install -y build-essential cmake linux-headers-`uname -r` pciutils libnuma-dev
+   11  cd MoonGen/
+   12  vim /etc/default/grub 
+   13  apt-get install vim
+   14  vim /etc/default/grub 
+   15  update-grub
+   16  reboot
+   17  ls
+   18  cd Mo
+   19  cd MoonGen/
+   20  ls
+   21  ./setup-hugetlbfs.sh 
+   22  ./build.sh 
+   23  ls
+   24  cd ..
+   25  mv -r MoonGen/ /opt
+   26  mv -r MoonGen/ /opt/
+   27  mv  MoonGen/ /opt/
+   28  cd /opt/MoonGen/
+   29  ./build.sh 
+   30  ls
+   31  ./build/MoonGen 
+   32  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+   33  ./build/MoonGen ./examples/l2-load-latency.lua 0
+   34  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+   35  ls
+   36  ./moongen-simple 
+   37  ./moongen-simple --help
+   38  ./moongen-simple start
+   39  ./moongen-simple start 1
+   40  ./moongen-simple start 10 0 0
+   41  ./build/MoonGen ./examples/l3-load-latency.lua 0 0
+   42  ls
+   43  cd /home/patric/
+   44  ls
+   45  cd MoonGen/
+   46  ls
+   47  ./build.sh 
+   48  ls
+   49  python
+   50  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --statys
+   51  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+   52  python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:23:00.1
+   53  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+   54  ls
+   55  cat /proc/meminfo 
+   56  ./build/MoonGen 
+   57  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+   58  cd ..
+   59  hugeadm
+   60  apt-get install hugepages
+   61  hugeadm --pool-list
+   62  cd /home/mcluizelli/
+   63  ssh mcluizelli@200.132.136.77
+   64  ls
+   65  cd Modelos/
+   66  cd ..
+   67  cd /opt/MoonGen/
+   68  ls
+   69  ./build.sh 
+   70  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+   71  python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:23:00.1
+   72  ls
+   73  ./setup-hugetlbfs.sh 
+   74  ./moongen-simple 
+   75  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+   76  /build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 dst-ip 200.10.12.3 --dst-ip-ry 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+   77  ./build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 dst-ip 200.10.12.3 --dst-ip-ry 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+   78  ls
+   79  cd libmoon/deps/dpdk/
+   80  ls
+   81  cd examples/
+   82  ls
+   83  cd l2fwd
+   84  ls
+   85  make
+   86  cd .
+   87  cd ..
+   88  ./build/MoonGen
+   89  ./build/MoonGen --help
+   90  ./build/MoonGen
+   91  ls
+   92  grep -rnw ./ -e 'CONFIG_RTE_MAX_LCORE' 
+   93  vim ./libmoon/deps/dpdk/x86_64-native-linux-gcc/.config
+   94  vim ./libmoon/deps/dpdk/x86_64-native-linux-gcc/.config.orig 
+   95  vim ./libmoon/deps/dpdk/config/common_base
+   96  ./build.sh 
+   97  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+   98  python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:23:00.1
+   99  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+  100  ls
+  101  vim ./examples/l2-load-latency.lua
+  102  ./build/MoonGen ./examples/l2-load-latency.lua 1 1
+  103  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+  104  shutdown 0
+  105  cd root
+  106  cd /root
+  107  ls
+  108  cd 
+  109  ls
+  110  ls -la /root
+  111  ls
+  112  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  113  cd /opt/MoonGen/
+  114  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  115  pwd
+  116  ls
+  117  ./setup-hugetlbfs.sh 
+  118  cat /proc/meminfo 
+  119  ls
+  120  python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:23:00.1
+  121  modprobe uio
+  122  modprobe igb_uio
+  123  modprobe vfio-pci
+  124  ls
+  125  ./bind-interfaces.sh 
+  126  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  127  vim bind-interfaces.sh 
+  128  vim libmoon/bind-interfaces.sh 
+  129  ls
+  130  find / -name igb_uio.ko
+  131  insmod /opt/MoonGen/libmoon/deps/dpdk/x86_64-native-linux-gcc/kmod/igb_uio.ko
+  132  modprobe ui
+  133  modprobe uio
+  134  insmod /opt/MoonGen/libmoon/deps/dpdk/x86_64-native-linux-gcc/kmod/igb_uio.ko
+  135  vim libmoon/bind-interfaces.sh 
+  136  lsmod 
+  137  lsmod | igb_uio]
+  138  lsmod | igb_uio
+  139  lsmod | grep igb_uio
+  140  rmmod igb_uio
+  141  lsmod | grep igb_uio
+  142  insmod /opt/MoonGen/libmoon/deps/dpdk/x86_64-native-linux-gcc/kmod/igb_uio.ko
+  143  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  144  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --bind=igb_uio 0000:21:00.0
+  145  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  146  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+  147  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  148  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:5b:d4 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0
+  149  /opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:5b:d4 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0
+  150  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  151  ls
+  152  vim setupNetGen.sh
+  153  ls
+  154  vim setupNetGen.sh 
+  155  reboot
+  156  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+  157  clear
+  158  adduser
+  159  adduser igorcapeletti
+  160  usermod -aG sudo igorcapeletti
+  161  su - igorcapeletti
+  162  ls
+  163  ls /root
+  164  clear
+  165  uname -a
+  166  uname -l
+  167  uname
+  168  uname -n
+  169  clear
+  170  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  171  /opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  172  cd /opt
+  173  ld
+  174  ls
+  175  cd ..
+  176  /opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  177  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  178  ifconfig
+  179  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 1 -rx 0 --dst-ip 200.10.12.3 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:63:3c --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 11.11.11.10 --src-ip-vary 0.0.0.0
+  180  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:5b:d4 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0
+  181  /opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:5b:d4 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0
+  182  #/opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary 0.0.0.0 --dst-mac 00:15:4d:13:5b:d4 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0
+  183  ./build/MoonGen ./examples/l2-load-latency.lua 0 0
+  184  python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
+  185  rmmod nfp
+  186  modprobe nfp
+  187  ip link show
+  188  ./moongen-simple start 10 0 0
+  189  history
+  190  clear
+  191  adduser rodrigo 
+  192  usermod -aG sudo rodrigo
+  193  su -rodrigo
+  194  su - rodrigo
+  195  ip link show
+  196  history
+  197  history >> historico_terminal.txt
