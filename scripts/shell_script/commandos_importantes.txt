@@ -65,3 +65,6 @@ ip netns exec ns1 route -n
 ip netns exec ns2 route -n
 
 sudo ip netns exec ns2 ./xdp_loader -d ens2f0 --force --auto-mode
+
+rmmod nfp
+modprobe nfp
