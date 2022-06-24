@@ -71,19 +71,13 @@ cd /home/$user/libbpf/xdp-tutorial/advanced03-AF_XDP
 #compila o programa eBPF
 make
 
-#ativa AF_XDP e programa eBPF na interface escolhida
+#executar o AF_XDP e prog eBPF nas interfaces comuns --------
 #sudo ./af_xdp_user -d $nome_interface
 #sudo ./af_xdp_user -d $nome_interface --auto-mode
-
-#ativa AF_XDP na interface escolhida e executa programa eBPF para retornar os pacotes que chegam na interface
 #sudo ./af_xdp_user -d $nome_interface --filename $programa_bpf
 
 
-
-#outras formas de executar o AF_XDP -----------------------------------------
-#./af_xdp_user --help
+#executar o AF_XDP e prog eBPF na placa Netronome -----------------------------------------
 ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --skb-mode
 #./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --xnative-mode
 #./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --auto-mode
-
-
