@@ -1,8 +1,10 @@
 
 
-#exemplo de execucao:
-#bash nome_arquivo usuario iface IP-iface mask IP_gerador progama_ebpf
-#bash exec_ebpf_AF_XDP.sh igorcapeletti ens2np0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o
+#exemplo de execucao:  ------------------------------------------------------------
+#bash nome_arquivo usuario iface IP_iface mask IP_gerador programa_ebpf hook_XDP
+#bash exec_ebpf_AF_XDP.sh igorcapeletti ens2np0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o xdpgeneric
+#bash exec_ebpf_AF_XDP.sh igorcapeletti ens2np0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o xdpnative
+#bash exec_ebpf_AF_XDP.sh igorcapeletti ens2np0 "10.10.10.10" "/24" "10.10.10.20" af_xdp_kern.o xdpoffload
 
 #variaveis globais do script ---------------
 user=$1
@@ -24,6 +26,7 @@ mask_ipv6=$4
 end_ipv4_gerador=$5
 end_ipv6_gerador=$5
 programa_bpf=$6
+hook_xdp=$7
 
 
 #exibe informações da execução do script
@@ -35,7 +38,7 @@ echo "Pasta do Programa BPF: $programa_bpf"
 #echo "Seção de execução: $secao_exec"
 echo -e "--------------------------------------------\n\n\n"
 
-
+#executar somente uma vez ao iniciar a maquina
 #rmmod nfp
 #modprobe nfp
 
@@ -78,6 +81,10 @@ make
 
 
 #executar o AF_XDP e prog eBPF na placa Netronome -----------------------------------------
-./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --skb-mode
-#./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --xnative-mode
-#./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --auto-mode
+if [ $hook_xdp = "xdpgeneric" ]; then
+    ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --skb-mode
+
+elif [ $hook_xdp = "xdpnative" ]; then
+    ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --native-mode
+
+fi

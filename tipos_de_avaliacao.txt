@@ -1,0 +1,11 @@
+1) Avaliar desempenho entre computadores com diferença de processamento mas com mesma placa netronome fazendo o processamento
+
+2)Avaliar desempenho AF_XDP dos diferentes Hooks XDP (generic, native e offload)
+
+3)Avaliar desempenho de acordo com o tipo de instrução executada
+
+4)Avaliar desempenho de acordo com a quantidade de instruções iguais, mas repetidas
+
+5)Avaliar desempenho para tratamento de diferentes endereços de destino
+
+6)Avaliar desempenho para diferentes tamanhos de pacotes processados
