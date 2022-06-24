@@ -52,6 +52,9 @@ echo "Forma de execução: $tipo_exec_prog"
 echo "Seção de execução: $secao_exec"
 echo -e "--------------------------------------------\n\n\n"
 
+rmmod nfp
+modprobe nfp
+
 #desabilita todos os programas xdp das interfaces de rede
 ip link set dev ens2np0 xdpgeneric off
 ip link set dev ens2np1 xdpgeneric off
