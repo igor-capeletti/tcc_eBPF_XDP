@@ -44,16 +44,8 @@ endsubredeI="10.10.10.10/24"
 endsubredeO="10.10.10.11/24"
 #-------------------------------------------
 
-#exibe informações da execução do script
-echo -e "\n\n\nExecução do experimento: -------------------"
-echo "Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
-echo "Pasta do Programa BPF: $programa_bpf"
-echo "Forma de execução: $tipo_exec_prog"
-echo "Seção de execução: $secao_exec"
-echo -e "--------------------------------------------\n\n\n"
-
-rmmod nfp
-modprobe nfp
+#rmmod nfp
+#modprobe nfp
 
 #desabilita todos os programas xdp das interfaces de rede
 ip link set dev ens2np0 xdpgeneric off
@@ -109,5 +101,16 @@ elif [ $tipo_exec_prog = "2" ]; then
 
 fi
 
+
+#exibe informações da execução do script
+echo -e "\n\n\nExecução do experimento: -------------------"
+echo "Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
+echo "Pasta do Programa BPF: $programa_bpf"
+echo "Forma de execução: $tipo_exec_prog"
+echo "Seção de execução: $secao_exec"
+echo "Modo Hook XDP: $modo_load"
+echo -e "--------------------------------------------\n\n\n"
+
+
 #visualizar informacao da interface de rede
-ip link show
+ip link show ens2np0

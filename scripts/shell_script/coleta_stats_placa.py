@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 # Copyright (C) 2017 Netronome Systems, Inc.
 
+#execução:
+#python3 coleta_stats_placa.py ens2np0
+
 import os
 import subprocess
 import signal
