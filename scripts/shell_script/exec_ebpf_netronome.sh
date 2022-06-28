@@ -73,6 +73,8 @@ if [ $tipo_rede = "single" ]; then
     #ifconfig ens2np0 $endsubredeI up
     ip addr add $endsubredeI dev ens2np0
 
+    #route add default gw 10.10.10.10 ens2np0
+
 elif [ $tipo_rede = "dual" ]; then
 
     #ativa links das interfaces de rede
@@ -85,8 +87,8 @@ elif [ $tipo_rede = "dual" ]; then
     #ifconfig ens2np1 $endsubredeO up
     ip addr add $endsubredeO dev ens2np1
 
-
 fi
+
 cd /home/igorcapeletti/libbpf/xdp-tutorial/"$programa_bpf"
 make
 
