@@ -88,9 +88,9 @@ elif [ $tipo_rede = "dual" ]; then
 
 fi
 cd /home/igorcapeletti/libbpf/xdp-tutorial/"$programa_bpf"
+make
 
 if [ $tipo_exec_prog = "1" ]; then
-    make
     #llvm-objdump -S xdp_prog_kern.o
     
     #ativar programa ebpf na interface ens2f0
