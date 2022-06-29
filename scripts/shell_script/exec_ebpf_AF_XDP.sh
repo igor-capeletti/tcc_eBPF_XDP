@@ -54,12 +54,12 @@ ip link set dev $nome_interface down
 ip link set dev $nome_interface up
 
 #configura endereco IPv4 na interface
-ifconfig $nome_interface $end_ipv4_interface$mask_ipv4 up
-#ip addr add $end_ipv4_interface$mask_ipv4 dev $nome_interface up
+ip addr add $end_ipv4_interface$mask_ipv4 dev $nome_interface
+#ifconfig $nome_interface $end_ipv4_interface$mask_ipv4 up
 
 
 #definir rota dos pacotes para serem redirecionados e devolvidos
-route add default gw $end_ipv4_interface $nome_interface
+#route add default gw $end_ipv4_interface $nome_interface
 #route add default gw $end_ipv6_interface $nome_interface
 #ou
 #route add default gw $end_ipv4_gerador $nome_interface
@@ -82,10 +82,16 @@ make
 
 
 #executar o AF_XDP e prog eBPF na placa Netronome -----------------------------------------
-if [ $hook_xdp = "xdpgeneric" ]; then
+if [ $hook_xdp = "help" ]; then
+    ./af_xdp_user --help 
+
+elif [ $hook_xdp = "xdpgeneric" ]; then
     ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --skb-mode
 
 elif [ $hook_xdp = "xdpnative" ]; then
     ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --native-mode
+
+elif [ $hook_xdp = "xdpoffload" ]; then
+    ./af_xdp_user --dev $nome_interface --filename $programa_bpf --force --progsec xdp_sock --offload-mode
 
 fi
