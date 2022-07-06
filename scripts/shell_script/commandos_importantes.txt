@@ -66,5 +66,27 @@ ip netns exec ns2 route -n
 
 sudo ip netns exec ns2 ./xdp_loader -d ens2f0 --force --auto-mode
 
+
+
+
 rmmod nfp
 modprobe nfp
+
+#exibe as filas RX/TX da interface de rede
+ethtool -l ens2np0
+
+#seta filas RX/TX da interface de rede
+ethtool -L ens2np0 combined 8
+ethtool -L ens2np0 other 2
+ethtool -L ens2np0 rx 8
+ethtool -L ens2np0 tx 8
+
+
+#Para visualizar os contadores de gotas da interface:
+ethtool -S ens2np0
+
+#Para visualizar o tamanho máximo do buffer de anel RX:
+ethtool -g ens2np0
+
+#Para alterar temporariamente o buffer de anel RX do enp1s0dispositivo para 4080, digite:
+ethtool -G ens2np0 rx 4080
