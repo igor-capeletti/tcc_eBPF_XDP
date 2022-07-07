@@ -45,13 +45,30 @@ df.rename(columns = {'Time':'time', 'TX Packets':'tx_packets', 'Packet Rate Avg'
 df_result= pd.DataFrame(np.zeros(shape=(30,3)), columns=cols_result)
 
 
+#calcular media para cada passo executado do teste
 i= 0
 j= 0
 while(i < int((len(df.index))/2)):
+  #calculo da relacao em cada passo de packets tx-rx
   df_result['tx_packet/rx_packet'][j]= df.tx_packets[i]-df.rx_packets[i+1]
   print(f'{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}')
+
+  #calculo da relacao em cada passo da taxa de packets tx-rx
+  df_result['tx_rate/rx_rate'][j]= df.tx_packet_rate[i]-df.rx_packet_rate[i+1]
+  print(f'{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}')
+
+  #calculo da relacao em cada passo da media da taxa de packets tx-rx
+  df_result['tx_rate_avg/rx_rate_avg'][j]= df.tx_packet_rate_avg[i]-df.rx_packet_rate_avg[i+1]
+  print(f'{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}')
   i+=2
   j+=1
 
+media_packets_tx_rx= df_result['tx_packet/rx_packet'].mean()
+media_rate_packets_tx_rx= df_result['tx_rate/rx_rate'].mean()
+media_avg_rate_packets_tx_rx= df_result['tx_rate_avg/rx_rate_avg'].mean()
+
 
 print(df_result)
+print(f'Media de pacotes tx-rx= \t\t{media_packets_tx_rx}')
+print(f'Media de taxa pacotes tx-rx= \t\t{media_rate_packets_tx_rx}')
+print(f'Media do AVG da taxa pacotes tx-rx= \t{media_avg_rate_packets_tx_rx}')
