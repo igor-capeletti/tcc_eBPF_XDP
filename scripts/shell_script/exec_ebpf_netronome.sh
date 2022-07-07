@@ -34,6 +34,15 @@
 #nome_interface="ens2np1"   #iface lab igor netronome
 
 
+#executar ao iniciar a maquina -----------------
+#rmmod nfp
+#modprobe nfp
+#ethtool -L ens2np0 combined 8
+#cd /home/igorcapeletti/github/nfp-drv-kmods/tools
+#bash set_irq_affinity.sh ens2np0
+#--------------------------------------------------------
+
+
 #variaveis globais do script ---------------
 tipo_rede=$1
 programa_bpf=$2
@@ -44,8 +53,6 @@ endsubredeI="10.10.10.10/24"
 endsubredeO="10.10.10.11/24"
 #-------------------------------------------
 
-#rmmod nfp
-#modprobe nfp
 
 #desabilita todos os programas xdp das interfaces de rede
 ip link set dev ens2np0 xdpgeneric off
