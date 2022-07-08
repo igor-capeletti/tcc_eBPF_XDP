@@ -86,9 +86,12 @@ for experimento in lista_experimentos:
   programa_ebpf_modificar.close()
   programa_ebpf_novo.close()
 
+  #os.system('echo %s|sudo -S %s' % (senha_server, (f'chmod 777 /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c')))
+
   os.system(f'rm /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c')
   os.system(f'mv /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern_novo.c /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c')
-  os.system(f'cd /home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_script')
+  #os.system('echo %s|sudo -S %s' % (senha_server, (f'chmod 777 /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c')))
+  
 
   #cria pasta para depois armazenar os resultados de cada experimento do gerador
   stdin,stdout,stderr= ssh_client.exec_command(f'mkdir /home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}')
@@ -111,7 +114,7 @@ for experimento in lista_experimentos:
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
     for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
       os.system(f'cd /home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_scrip')
-      os.system(f'bash exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')
+      os.system('echo %s|sudo -S %s' % (senha_server, (f'bash exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
       
       #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
       stdin,stdout,stderr= ssh_client.exec_command(f'cd /home/{usuario_ssh}/github/tcc_eBPF_XDP/gerador_trafego')
