@@ -1,29 +1,50 @@
+#Execucao:
+#python3 gera_csv_resultado.py --arquivo nome_arquivo
 import os
 import sys
 from datetime import datetime
 
 #importacao da biblioteca pandas, numpy, matplotlib, seaborn
 try:
+  import argparse
   import pandas as pd
   import numpy as np
   import matplotlib.pyplot as plt
   import seaborn as sns
 
 except:
+  os.system('pip install argparse')
   os.system('pip install pandas')
   os.system('pip install numpy')
   os.system('pip install matplotlib')
   os.system('pip install seaborn')
 
-
-name_file= 'res_pkt64_ebpf_xdpgeneric+AF_XDP_varIP_255.255.255.255_varMAC_00:00:00:00:00:00.txt'
+#variaveis globais -------------------------------------------
+endereco_file= ''
 cols= ['Time', 'TX Packets', 'Packet Rate Avg', 'Packet Rate', 'RX Packets','Packet Rate Avg.1','Packet Rate.1',
        'Core', 'Port']
 cols_result= ['tx_packet/rx_packet', 'tx_rate/rx_rate', 'tx_rate_avg/rx_rate_avg']
 
 
+
+#tratamento de argumento -------------------------------------------
+parser = argparse.ArgumentParser()
+parser.add_argument("--arquivo", help="Define nome do arquivo para calcular o valor dos resultados.")
+args = parser.parse_args()
+
+try:    
+    if args.arquivo:
+        endereco_file = args.arquivo
+    else:
+        print("\nNao definido nome do arquivo para calcular o resultado! Ver comando --arquivo")
+        exit(-1)
+except:
+    print("Erro com parametros passados!")
+    exit(-1)
+
+
 #Carregamento do arquivo de resultados dos experimentos com o gerador de trafego:
-df= pd.read_fwf(name_file)
+df= pd.read_fwf(endereco_file)
 df= df[cols]
 
 
@@ -63,12 +84,22 @@ while(i < int((len(df.index))/2)):
   i+=2
   j+=1
 
+
+#calcula a media geral de cada coluna do dataframe
 media_packets_tx_rx= df_result['tx_packet/rx_packet'].mean()
 media_rate_packets_tx_rx= df_result['tx_rate/rx_rate'].mean()
 media_avg_rate_packets_tx_rx= df_result['tx_rate_avg/rx_rate_avg'].mean()
 
 
-print(df_result)
-print(f'Media de pacotes tx-rx= \t\t{media_packets_tx_rx}')
-print(f'Media de taxa pacotes tx-rx= \t\t{media_rate_packets_tx_rx}')
-print(f'Media do AVG da taxa pacotes tx-rx= \t{media_avg_rate_packets_tx_rx}')
+#salva essas medias calculadas acima, em um arquivo que contera o resultado de todos os testes
+local_end= endereco_file.split('/')
+end_pasta= f'{local_end[0]}/{local_end[1]}/{local_end[2]}/{local_end[3]}/{local_end[4]}/{local_end[5]}/{local_end[6]}'
+arq_resultados= open(f'{end_pasta}/resultado_final.txt', 'a')
+arq_resultados.write(f'{local_end[7]}\t{media_packets_tx_rx}\t{media_rate_packets_tx_rx}\t{media_avg_rate_packets_tx_rx}\n')
+arq_resultados.close()
+
+
+#print(df_result)
+#print(f'Media de pacotes tx-rx= \t\t{media_packets_tx_rx}')
+#print(f'Media de taxa pacotes tx-rx= \t\t{media_rate_packets_tx_rx}')
+#print(f'Media do AVG da taxa pacotes tx-rx= \t{media_avg_rate_packets_tx_rx}')

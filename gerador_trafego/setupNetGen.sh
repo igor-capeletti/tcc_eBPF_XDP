@@ -1,14 +1,15 @@
 #Ex execucao: 
 #bash <nome_exec> <tam_packet> <hook_xdp> <var_IP> <var_MAR> <timeout_exec>
-#bash setupNetGen.sh 64 xdpgeneric 0.0.0.10 00:00:00:00:00:00 60
+#bash setupNetGen.sh 64 xdpgeneric 0.0.0.10 00:00:00:00:00:00 60 pasta
 
 packet_size=$1
 modo_hook_xdp=$2
 var_dst_IP=$3
 var_dst_MAC=$4
 timeout=$5
+nome_pasta_resultados=$6
 
-arq_save="../../home/igorcapeletti/github/tcc_eBPF_XDP/resultados/res_pkt"$packet_size"_ebpf_"$modo_hook_xdp"_varIP_"$var_dst_IP"_varMAC_"$var_dst_MAC
+arq_save="../../home/igorcapeletti/github/tcc_eBPF_XDP/resultados/"$nome_pasta_resultados"/res_pkt"$packet_size"_ebpf_"$modo_hook_xdp"_varIP_"$var_dst_IP"_varMAC_"$var_dst_MAC
 
 cd /opt/MoonGen
 
