@@ -118,7 +118,7 @@ for experimento in lista_experimentos:
           stdin,stdout,stderr= ssh_client.exec_command(f'cd /home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/python')
           stdin,stdout,stderr= ssh_client.exec_command(f'python3 gera_csv_resultado.py --arquivo {arq_save_resultado}')
 
-  else if(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
+  elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
     print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
 
 ssh_client.close()
