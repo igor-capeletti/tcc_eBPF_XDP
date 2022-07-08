@@ -20,8 +20,8 @@ tempo_inicial_geral = timeit.default_timer()
 
 
 #variaveis globais ----------------------------
-usuario= 'igorubuntu'
-#usuario= 'igorcapeletti'
+#usuario= 'igorubuntu'
+usuario= 'igorcapeletti'
 tipo_programa_ebpf= 'for'
 secao_programa_ebpf= 'xdp_test'
 modo_execucao_programa_ebpf= 'normal'
@@ -58,7 +58,7 @@ for experimento in lista_experimentos:
     arq_algoritmo.write('out:\n')
     arq_algoritmo.write(f'\tif(var != {experimento})'+'{\n')
     arq_algoritmo.write('\t\tvar= var+1;\n')
-    arq_algoritmo.write('\t\tpkt_count= bpf_map_lookup_elem(&xdp_stats_map, 0, index);\n')
+    arq_algoritmo.write('\t\tpkt_count = bpf_map_lookup_elem(&xdp_stats_map, &index);\n')
     arq_algoritmo.write('\t\tgoto out;\n')
     arq_algoritmo.write('\t}\n')
     arq_algoritmo.write('\treturn XDP_TX;\n')
