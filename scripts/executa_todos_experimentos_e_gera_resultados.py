@@ -4,6 +4,7 @@ import time
 import sys
 import glob
 from pathlib import Path
+import getpass
 
 #importacao da biblioteca paramiko(ssh) e argparse(argumentos)
 try:
@@ -31,7 +32,7 @@ modo_execucao_programa_ebpf= 'normal'
 #variaveis da conexao ssh ----------------------------
 usuario_ssh= usuario
 server= '200.132.136.84'
-senha_server= input('\nSenha do usuario SSH: ')
+senha_server= getpass.getpass('\nSenha do usuario SSH: ')
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh_client.connect(hostname= server, username= usuario_ssh, password= senha_server)
@@ -56,7 +57,7 @@ for experimento in lista_experimentos:
     arq_algoritmo.write('\tint index= ctx->rx_queue_index;\n')
     arq_algoritmo.write('\tgoto out;\n\n')
     arq_algoritmo.write('out:\n')
-    arq_algoritmo.write(f'\tif(var != {experimento})'+'{\n')
+    arq_algoritmo.write(f'\tif(var <= {experimento})'+'{\n')
     arq_algoritmo.write('\t\tvar= var+1;\n')
     arq_algoritmo.write('\t\tpkt_count = bpf_map_lookup_elem(&xdp_stats_map, &index);\n')
     arq_algoritmo.write('\t\tgoto out;\n')
@@ -94,7 +95,7 @@ for experimento in lista_experimentos:
 
   #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
   ftp_client = ssh_client.open_sftp()
-  ftp_client.put(f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c', f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}')    #envia arquivo para atacante via sftp
+  ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
   ftp_client.close()
 
 
@@ -109,6 +110,7 @@ for experimento in lista_experimentos:
 
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
     for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
+      os.system(f'cd /home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_scrip')
       os.system(f'bash exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')
       
       #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
