@@ -138,13 +138,13 @@ for experimento in lista_experimentos:
           ssh_client = paramiko.SSHClient()
           ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
           ssh_client.connect(hostname= server, username= usuario_ssh, password= senha_server)
-          stdin,stdout,stderr= ssh_client.exec_command(f'ls /root')
-          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')))
+          stdin,stdout,stderr= ssh_client.exec_command(f'ls')
+          #stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')))
           
           #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
 #          arq_save_resultado=f"{ssh_local_resultados}/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
 #          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')))
-        ssh_client.close()
+          ssh_client.close()
 #  elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
 #    print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
 #
