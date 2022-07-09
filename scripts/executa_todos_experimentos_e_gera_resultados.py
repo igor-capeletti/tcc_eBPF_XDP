@@ -40,10 +40,10 @@ ssh_client.connect(hostname= server, username= usuario_ssh, password= senha_serv
 cont_inicial= 0
 cont_final= 10500
 cont_intervalo= 500
-local_scripts_shell= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_scrip'
+local_scripts_shell= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_script'
 local_scripts_ebpf= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf'
 local_scripts_python= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/python'
-ssh_local_scripts_shell= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/shell_scrip'
+ssh_local_scripts_shell= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/shell_script'
 ssh_local_scripts_ebpf= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/ebpf'
 ssh_local_scripts_python= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/python'
 ssh_local_resultados= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados'
