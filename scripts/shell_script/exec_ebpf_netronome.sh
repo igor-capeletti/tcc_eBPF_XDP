@@ -119,8 +119,9 @@ echo "Pasta do Programa BPF: $programa_bpf"
 echo "Forma de execução: $tipo_exec_prog"
 echo "Seção de execução: $secao_exec"
 echo "Modo Hook XDP: $modo_load"
-echo -e "--------------------------------------------\n\n\n\n\n"
-
+echo -e "\n"
 
 #visualizar informacao da interface de rede
 ip link show ens2np0
+
+echo -e "--------------------------------------------\n\n\n\n\n"
