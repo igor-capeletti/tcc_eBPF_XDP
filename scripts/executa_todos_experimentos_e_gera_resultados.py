@@ -112,13 +112,13 @@ for experimento in lista_experimentos:
   #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
   ftp_client = ssh_client.open_sftp()
   ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
-  ftp_client.close()
+  #ftp_client.close()
 
 
   #3)-Modo de execucao do programa ebpf(normal ou AF_XDP) ----------------------------------------
   if(modo_execucao_programa_ebpf == 'normal'):  #modo exec eBPF normal
     arq_save_resultado= ''
-    timeout_gerador= 120
+    timeout_gerador= '120'
     #lista_modos_exec_xdp= ['xdpgeneric','xdpdrv','xdpoffload']
     lista_modos_exec_xdp= ['xdpgeneric','xdpdrv']
     lista_tam_pacotes_gerar= ['64','128','256','512','1024','1500']
