@@ -122,17 +122,17 @@ for experimento in lista_experimentos:
 
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
     for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
-      os.system('echo %s|sudo -S %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
+      os.system('echo %s|sudo %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
       
       #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
       for tam_packet in lista_tam_pacotes_gerar:  #vai fazer o experimento para cada um dos tamanhos de pacotes
         for var_ip in lista_variacao_ips:           #vai fazer o experimento para cada variacao de IPs
-          #executa o gerador e coloeta os dados tx/rx dos espeximento e salva dentro de uma pasta num arquivo especifico
-          stdin,stdout,stderr= ssh_client.exec_command(f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')
+          #executa o gerador e coleta os dados tx/rx dos espeximento e salva dentro de uma pasta num arquivo especifico
+          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')
           
           #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
           arq_save_resultado=f"{ssh_local_resultados}/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
-          stdin,stdout,stderr= ssh_client.exec_command(f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')
+          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')
 
   elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
     print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
