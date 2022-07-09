@@ -113,20 +113,20 @@ for experimento in lista_experimentos:
   ftp_client = ssh_client.open_sftp()
   ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
   ftp_client.close()
-#
-#
-#  #3)-Modo de execucao do programa ebpf(normal ou AF_XDP) ----------------------------------------
-#  if(modo_execucao_programa_ebpf == 'normal'):  #modo exec eBPF normal
-#    arq_save_resultado= ''
-#    timeout_gerador= 120
-#    lista_modos_exec_xdp= ['xdpgeneric','xdpdrv','xdpoffload']
-#    lista_tam_pacotes_gerar= ['64','128','256','512','1024','1500']
-#    lista_variacao_ips= ['0.0.0.0','0.0.0.255','0.0.255.255','0.255.255.255','255.255.255.255']
-#    lista_variacao_macs= '00:00:00:00:00:00'  
-#
-#    #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
-#    for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
-#      os.system('echo %s|sudo %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
+
+
+  #3)-Modo de execucao do programa ebpf(normal ou AF_XDP) ----------------------------------------
+  if(modo_execucao_programa_ebpf == 'normal'):  #modo exec eBPF normal
+    arq_save_resultado= ''
+    timeout_gerador= 120
+    lista_modos_exec_xdp= ['xdpgeneric','xdpdrv','xdpoffload']
+    lista_tam_pacotes_gerar= ['64','128','256','512','1024','1500']
+    lista_variacao_ips= ['0.0.0.0','0.0.0.255','0.0.255.255','0.255.255.255','255.255.255.255']
+    lista_variacao_macs= '00:00:00:00:00:00'  
+
+    #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
+    for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
+      os.system('echo %s|sudo %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
 #      
 #      #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
 #      for tam_packet in lista_tam_pacotes_gerar:  #vai fazer o experimento para cada um dos tamanhos de pacotes
