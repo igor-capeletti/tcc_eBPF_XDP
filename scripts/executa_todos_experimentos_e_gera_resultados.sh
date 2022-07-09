@@ -48,7 +48,7 @@ for it_combined in "1" "2" "4" "8"; do
       echo "  Combined =  $it_combined"
       echo "  Algoritmo = $nome_arq_algoritmo"
     done
-    cont_b=($cont_b+1)
+    cont_b=$((cont_b+1))
   fi
-  cont_a=($cont_a+1)
+  cont_a=$((cont_a+1))
 done
