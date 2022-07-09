@@ -105,13 +105,14 @@ for experimento in lista_experimentos:
   #os.system('echo %s|sudo -S %s' % (senha_server, (f'chmod 777 /home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c')))
   
 
-#  #cria pasta para depois armazenar os resultados de cada experimento do gerador
-#  stdin,stdout,stderr= ssh_client.exec_command(f'mkdir {ssh_local_resultados}/{pasta_resultado}')
-#
-#  #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
-#  ftp_client = ssh_client.open_sftp()
-#  ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
-#  ftp_client.close()
+  #cria pasta para depois armazenar os resultados de cada experimento do gerador
+  stdin,stdout,stderr= ssh_client.exec_command(f'rm -r {ssh_local_resultados}/{pasta_resultado}')
+  #stdin,stdout,stderr= ssh_client.exec_command(f'mkdir {ssh_local_resultados}/{pasta_resultado}')
+
+  #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
+  #ftp_client = ssh_client.open_sftp()
+  #ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
+  #ftp_client.close()
 #
 #
 #  #3)-Modo de execucao do programa ebpf(normal ou AF_XDP) ----------------------------------------
