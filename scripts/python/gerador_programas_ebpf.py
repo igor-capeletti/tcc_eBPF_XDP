@@ -3,83 +3,68 @@ import sys
 import string
 import argparse
 
-#tipos de blocos de código
-# 0- NADA ou null
-# 1- IF
-# 2- WHILE
-# 3- FOR
-# 4- CALC
-# 5- ALOC_EST
-# 6- ALOC_DIN
+#Execucao:
+#python3 --instrucao for --inicio 0 --fim 0 --intervalo 0
 
 #variaveis globais
 lst_instrucoes= []
 string_struction= ""
 arq_dest= ""
 repeticoes= 1
+local_scripts_ebpf= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf'
 
 #main -----------------------------------------------------------------------------------
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
-  parser.add_argument("--arq_af_xdp", help="Arquivo AF_XDP para inserir instrucoes dentro")
-  parser.add_argument("--arq_dest", help="Novo arquivo com AF_XDP e instrucoes geradas")
-  parser.add_argument("--instruction", help="Qualquer instrucao, mas não pode conter espacos")
-  #parser.add_argument("--form", help="rolled, sequential")
-  parser.add_argument("--repeat", help="1...N")
+  parser.add_argument("--instrucao", help=" ")
+  parser.add_argument("--inicio", help=" ")
+  parser.add_argument("--fim", help=" ")
   args = parser.parse_args()
   
   try: 
-    
-    #le todas as instrucoes do arquivo AF_XDP(Ex: af_xdp_user.c)
-    if args.arq_af_xdp: 
-      arquivo_af_xdp = open(args.arq_af_xdp, 'rb')
-      for i in arquivo_af_xdp:
-        nome = i.decode()
-        nome = nome.split("\r\n")[0]
-        lst_instrucoes.append(nome)
-      print("\nInstruções arquivo AF_XDP: ", lst_instrucoes) 
-      arquivo_af_xdp.close()
-    else: 
-      print("\nNão definido arquivo AF_XDP para ler instruções! Ver --arq_af_xdp")
-      exit(-1)
+    if args.instrucao: 
+      if(args.instrucao == "for"):
+        if args.inicio: 
+          if args.fim: 
+            if args.intervalo:
+              arq_algoritmo= open(f'{local_scripts_ebpf}/{args.instrucao}_{args.inicio}_a_{args.fim}.c', 'w')
+              
+              arq_algoritmo.write('\n#include <linux/bpf.h>\n')
+              arq_algoritmo.write('#include <bpf/bpf_helpers.h>\n\n\n')
+              arq_algoritmo.write('struct bpf_map_def SEC("maps") xsks_map = {\n')
+              arq_algoritmo.write('\t.type = BPF_MAP_TYPE_XSKMAP,\n')
+              arq_algoritmo.write('\t.key_size = sizeof(int),\n')
+              arq_algoritmo.write('\t.value_size = sizeof(int),\n')
+              arq_algoritmo.write('\t.max_entries = 64,\n};\n\n')
+              arq_algoritmo.write('struct bpf_map_def SEC("maps") xdp_stats_map = {\n')
+              arq_algoritmo.write('\t.type = BPF_MAP_TYPE_PERCPU_ARRAY,\n')
+              arq_algoritmo.write('\t.key_size    = sizeof(int),\n')
+              arq_algoritmo.write('\t.value_size  = sizeof(__u32),\n')
+              arq_algoritmo.write('\t.max_entries = 64,\n};\n\n')
+              arq_algoritmo.write('SEC("xdp_pass")\n')
+              arq_algoritmo.write('int xdp_pass_func(struct xdp_md *ctx){\n')
+              arq_algoritmo.write('\tint var= 0;\n')
+              arq_algoritmo.write('\t__u32 *pkt_count;\n')
+              arq_algoritmo.write('\tint index= ctx->rx_queue_index;\n')
+              arq_algoritmo.write('\tgoto out;\n\n')
+              arq_algoritmo.write('out:\n')
+              arq_algoritmo.write(f'\tif(var <= {args.fim})'+'{\n')
+              arq_algoritmo.write('\t\tvar= var+1;\n')
+              arq_algoritmo.write('\t\tpkt_count = bpf_map_lookup_elem(&xdp_stats_map, &index);\n')
+              arq_algoritmo.write('\t\tgoto out;\n')
+              arq_algoritmo.write('\t}\n')
+              arq_algoritmo.write('\treturn XDP_TX;\n')
+              arq_algoritmo.write('}\n\n\n')
 
-
-    #usuario definiu um arquivo de destino
-    if args.arq_dest: 
-      arq_dest= args.arq_dest      
-    else: 
-      print("\nNão definido arquivo para salvar as instruções! Ver --arq_dest")
-      exit(-1)
-
-
-    #usuario definiu uma instrucao para ser adicionado dentro do arquivo AF_XDP
-    if args.instruction:    
-      string_struction= args.instruction
-    else:
-      print("\nNão definida instrução! Ver --instruction")
-      exit(-1)
-
-
-    #usuario definiu quantidade de instrucoes repetidas de maneira sequencial
-    if args.repeat:
-      repeticoes= args.repeat
-    else:
-      print("\nNão definido repetiçoes para instrução, default= 1! Ver --repeat")
-      
+              arq_algoritmo.write('SEC("xdp_drop")\n')
+              arq_algoritmo.write('int xdp_drop_func(struct xdp_md *ctx){\n')
+              arq_algoritmo.write('\treturn XDP_DROP;\n}\n\n')
+              arq_algoritmo.write('char _license[] SEC("license") = "GPL";\n')
+              arq_algoritmo.close()
+        
   except:
       print("Erro com parametros passados!")
       exit(-1)
-  
-  #se nao ocorreram erros na leitura dos argumentos, 
-  #segue os proximos passos para geracao de instrucoes dentro do AF_XDP
 
-  #escrever as novas instrucoes a partir da linha 305 e depois 
-  # ao terminar continuar escrevendo as instrucoes restantes do arquivo AF_XDP
-  
-  #serao criadas as intrucoes escolhilas
-  string_instruction= f'{args.instruction}'
-  arquivo_intrucoes = open(args.arq_dest, 'rb') 
-  for i in lst_instrucoes:
-    arquivo_intrucoes.write(i)    
-    
-  arquivo_intrucoes.close()
+
+
