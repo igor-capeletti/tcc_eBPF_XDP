@@ -55,19 +55,11 @@ endsubredeO="10.10.10.11/24"
 
 
 #desabilita todos os programas xdp das interfaces de rede
-ip link set dev ens2np0 xdpgeneric off
-ip link set dev ens2np1 xdpgeneric off
-
-ip link set dev ens2np0 xdpdrv off
-ip link set dev ens2np1 xdpdrv off
-
-ip link set dev ens2np0 xdpoffload off
-ip link set dev ens2np1 xdpoffload off
+ip link set dev ens2np0 $modo_load off
 
 
 #derruba interfaces de rede
 ip link set dev ens2np0 down
-ip link set dev ens2np1 down
 
 
 #configuracao das interfaces de rede
