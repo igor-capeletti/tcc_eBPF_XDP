@@ -127,7 +127,7 @@ for experimento in lista_experimentos:
 
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
     for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
-      os.system(f'echo \nExperimento {nome_arq_algoritmo}, modo xdp {modo_xdp}! ---------------------------------------------------------------------')
+      os.system(f'echo Experimento {nome_arq_algoritmo}, modo xdp {modo_xdp}! ---------------------------------------------------------------------')
       os.system('echo %s|sudo %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
       
 #      #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
