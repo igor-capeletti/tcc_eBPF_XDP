@@ -41,7 +41,7 @@ for it_combined in "1" "2" "4" "8"; do
 
   if [ $tipo_programa_ebpf = "for" ]; then
     for it_experimento in {0..10500..500}; do
-      nome_arq_algoritmo= "for_"$cont_inicial"_a_$it_experimento.c"
+      nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
       echo "  Algoritmo = $nome_arq_algoritmo"
 
     done
