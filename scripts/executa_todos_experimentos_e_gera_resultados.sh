@@ -45,12 +45,18 @@ for it_combined in "1" "2" "4" "8"; do
       #gera programa ebpf escolhido
       python3 /home/$usuario/github/tcc_eBPF_XDP/scripts/python/gerador_programas_ebpf.py --instrucao $tipo_programa_ebpf --inicio $cont_inicial --fim $it_experimento
 
+      #deleta programa ebpf atual da pasta de execucao
+      rm /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
+
+      #substitui o programa ebpf atual por um novo que sera executado
+      cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
 
 
       #prints
       echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
       echo "  Combined =  $it_combined"
       echo "  Algoritmo = $nome_arq_algoritmo"
+      echo -e "\n"
       cont_b=$((cont_b+1))
     done
   fi
