@@ -40,6 +40,15 @@ ssh_client.connect(hostname= server, username= usuario_ssh, password= senha_serv
 cont_inicial= 0
 cont_final= 10500
 cont_intervalo= 500
+local_scripts_shell= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_scrip'
+local_scripts_ebpf= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf'
+local_scripts_python= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/python'
+ssh_local_scripts_shell= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/shell_scrip'
+ssh_local_scripts_ebpf= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/ebpf'
+ssh_local_scripts_python= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/python'
+ssh_local_resultados= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados'
+ssh_local_gerador= f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/gerador_trafego'
+
 
 lista_experimentos= list(range(cont_inicial, cont_final, cont_intervalo))
 for experimento in lista_experimentos:
@@ -48,7 +57,7 @@ for experimento in lista_experimentos:
   if(tipo_programa_ebpf == 'for'):
     nome_arq_algoritmo= f'for_{cont_inicial}_a_{experimento}.c'
     pasta_resultado= nome_arq_algoritmo
-    arq_algoritmo= open(f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf/{nome_arq_algoritmo}', 'w')
+    arq_algoritmo= open(f'{local_scripts_ebpf}/{nome_arq_algoritmo}', 'w')
     
     arq_algoritmo.write(f'\nSEC("{secao_programa_ebpf}")\n')
     arq_algoritmo.write('int  xdp_test_func(struct xdp_md *ctx){\n')
@@ -70,7 +79,7 @@ for experimento in lista_experimentos:
 
 
   #2)reescreve novo programa eBPF em novo arquivo a partir de dois outros arquivos --------------------------------------
-  arq_algoritmo= open(f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf/{nome_arq_algoritmo}', 'r')
+  arq_algoritmo= open(f'{local_scripts_ebpf}/{nome_arq_algoritmo}', 'r')
   programa_ebpf_modificar= open(f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c', 'r')
   programa_ebpf_novo= open(f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern_novo.c', 'w')
 
@@ -94,11 +103,11 @@ for experimento in lista_experimentos:
   
 
   #cria pasta para depois armazenar os resultados de cada experimento do gerador
-  stdin,stdout,stderr= ssh_client.exec_command(f'mkdir /home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}')
+  stdin,stdout,stderr= ssh_client.exec_command(f'mkdir {ssh_local_resultados}/{pasta_resultado}')
 
   #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
   ftp_client = ssh_client.open_sftp()
-  ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
+  ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
   ftp_client.close()
 
 
@@ -113,20 +122,17 @@ for experimento in lista_experimentos:
 
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
     for modo_xdp in lista_modos_exec_xdp:   #vai fazer o experimento para cada um dos Hooks do XDP
-      os.system(f'cd /home/{usuario}/github/tcc_eBPF_XDP/scripts/shell_scrip')
-      os.system('echo %s|sudo -S %s' % (senha_server, (f'bash exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
+      os.system('echo %s|sudo -S %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
       
       #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
-      stdin,stdout,stderr= ssh_client.exec_command(f'cd /home/{usuario_ssh}/github/tcc_eBPF_XDP/gerador_trafego')
       for tam_packet in lista_tam_pacotes_gerar:  #vai fazer o experimento para cada um dos tamanhos de pacotes
         for var_ip in lista_variacao_ips:           #vai fazer o experimento para cada variacao de IPs
           #executa o gerador e coloeta os dados tx/rx dos espeximento e salva dentro de uma pasta num arquivo especifico
-          stdin,stdout,stderr= ssh_client.exec_command(f'bash setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')
+          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo -S %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')))
           
           #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
-          arq_save_resultado=f"/home/{usuario_ssh}/github/tcc_eBPF_XDP/resultados/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
-          stdin,stdout,stderr= ssh_client.exec_command(f'cd /home/{usuario_ssh}/github/tcc_eBPF_XDP/scripts/python')
-          stdin,stdout,stderr= ssh_client.exec_command(f'python3 gera_csv_resultado.py --arquivo {arq_save_resultado}')
+          arq_save_resultado=f"{ssh_local_resultados}/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
+          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo -S %s' % (senha_server, (f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')))
 
   elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
     print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
