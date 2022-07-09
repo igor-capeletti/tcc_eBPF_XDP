@@ -25,6 +25,7 @@ ssh_local_gerador="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/gerador_trafeg
 cont_inicial=0
 cont_final=10500
 cont_intervalo=500
+nome_arq_algoritmo=""
 
 cont_a=1
 cont_b=1
@@ -35,7 +36,14 @@ cont_e=1
 #vai iterar nos modos combined escolhidos
 echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
 for it_combined in "1" "2" "4" "8"; do
-  echo "  Combined = $it_combined"
+  echo "  Combined =  $it_combined"
   ethtool -L ens2np0 combined $it_combined
 
+  if [ $tipo_programa_ebpf = "for" ]; then
+    for it_experimento in {0..10500..500}; do
+      nome_arq_algoritmo= "for_"$cont_inicial"_a_$it_experimento.c"
+      echo "  Algoritmo = $nome_arq_algoritmo"
+
+    done
+  fi
 done
