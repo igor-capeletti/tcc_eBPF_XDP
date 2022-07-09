@@ -97,8 +97,9 @@ elif [ $tipo_rede = "dual" ]; then
 fi
 
 cd /home/igorcapeletti/libbpf/xdp-tutorial/"$programa_bpf"
+echo -e "Make"
 make
-
+echo -e "\nCarregamento programa ebpf para interface"
 if [ $tipo_exec_prog = "1" ]; then
     #llvm-objdump -S xdp_prog_kern.o
     
@@ -118,7 +119,7 @@ echo "Pasta do Programa BPF: $programa_bpf"
 echo "Forma de execução: $tipo_exec_prog"
 echo "Seção de execução: $secao_exec"
 echo "Modo Hook XDP: $modo_load"
-echo -e "--------------------------------------------\n\n\n"
+echo -e "--------------------------------------------"
 
 
 #visualizar informacao da interface de rede
