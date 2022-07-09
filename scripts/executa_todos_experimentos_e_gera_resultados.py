@@ -122,7 +122,8 @@ for experimento in lista_experimentos:
     #lista_modos_exec_xdp= ['xdpgeneric','xdpdrv','xdpoffload']
     lista_modos_exec_xdp= ['xdpgeneric','xdpdrv']
     lista_tam_pacotes_gerar= ['64','128','256','512','1024','1500']
-    lista_variacao_ips= ['0.0.0.0','0.0.0.255','0.0.255.255','0.255.255.255','255.255.255.255']
+    #lista_variacao_ips= ['0.0.0.0','0.0.0.255','0.0.255.255','0.255.255.255','255.255.255.255']
+    lista_variacao_ips= ['0.0.0.255']
     lista_variacao_macs= '00:00:00:00:00:00'  
 
     #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher ------------------------------------
