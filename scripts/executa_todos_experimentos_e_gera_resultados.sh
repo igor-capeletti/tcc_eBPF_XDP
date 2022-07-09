@@ -34,16 +34,21 @@ cont_d=1
 cont_e=1
 
 #vai iterar nos modos combined escolhidos
-echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
 for it_combined in "1" "2" "4" "8"; do
-  echo "  Combined =  $it_combined"
   ethtool -L ens2np0 combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
-    for it_experimento in {0..10500..500}; do
+    for it_experimento in {0..10000..500}; do
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
-      echo "  Algoritmo = $nome_arq_algoritmo"
 
+
+
+      #prints
+      echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
+      echo "  Combined =  $it_combined"
+      echo "  Algoritmo = $nome_arq_algoritmo"
     done
+    cont_b+=1
   fi
+  cont_a+=1
 done
