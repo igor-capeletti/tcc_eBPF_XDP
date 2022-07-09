@@ -64,8 +64,5 @@ if __name__ == '__main__':
               arq_algoritmo.close()
         
   except:
-      print("Erro com parametros passados!")
-      exit(-1)
-
-
-
+    print("Erro com parametros passados!")
+    exit(-1)

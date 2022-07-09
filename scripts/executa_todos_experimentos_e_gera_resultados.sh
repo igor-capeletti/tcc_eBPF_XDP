@@ -54,5 +54,6 @@ for it_combined in "1" "2" "4" "8"; do
       cont_b=$((cont_b+1))
     done
   fi
+  cont_b=$((0))
   cont_a=$((cont_a+1))
 done
