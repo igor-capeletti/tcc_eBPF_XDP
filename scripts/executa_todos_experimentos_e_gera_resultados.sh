@@ -51,6 +51,9 @@ for it_combined in "1" "2" "4" "8"; do
       #substitui o programa ebpf atual por um novo que sera executado
       cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
 
+      #remove e cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
+      rm -r $ssh_local_resultados/$pasta_resultado
+      mkdir $ssh_local_resultados/$pasta_resultado
 
       #prints
       echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
