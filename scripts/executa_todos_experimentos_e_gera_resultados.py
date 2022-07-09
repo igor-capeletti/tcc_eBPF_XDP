@@ -112,7 +112,6 @@ for experimento in lista_experimentos:
   #envia o arquivo ebpf criado(para backup) para a pasta dentro da maquina que esta gerando o trafego
   ftp_client = ssh_client.open_sftp()
   ftp_client.put((f'/home/{usuario}/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c'), (f'{ssh_local_resultados}/{pasta_resultado}/xdp_prog_kern.c'))    #envia arquivo para atacante via sftp
-  ftp_client.close()
 
 
   #3)-Modo de execucao do programa ebpf(normal ou AF_XDP) ----------------------------------------
@@ -131,27 +130,25 @@ for experimento in lista_experimentos:
       os.system(f'echo Experimento {nome_arq_algoritmo}, modo xdp {modo_xdp}! ---------------------------------------------------------------------')
       os.system('echo %s|sudo %s' % (senha_server, (f'bash {local_scripts_shell}/exec_ebpf_netronome.sh single basic02-prog-by-name 1 {modo_xdp} {secao_programa_ebpf}')))
       
-      #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
       for tam_packet in lista_tam_pacotes_gerar:  #vai fazer o experimento para cada um dos tamanhos de pacotes
         for var_ip in lista_variacao_ips:           #vai fazer o experimento para cada variacao de IPs
+          #5)-Faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos ------------
           #executa o gerador e coleta os dados tx/rx dos espeximento e salva dentro de uma pasta num arquivo especifico
-          ssh_client = paramiko.SSHClient()
-          ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-          ssh_client.connect(hostname= server, username= usuario_ssh, password= senha_server)
-          stdin,stdout,stderr= ssh_client.exec_command(f'ls')
+          os.system(f'bash acesso_ssh.sh {usuario_ssh} {server} {senha_server} {tam_packet} {modo_xdp} {var_ip} {lista_variacao_macs} {timeout_gerador} {pasta_resultado}')
           #stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')))
           
+          
           #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
-#          arq_save_resultado=f"{ssh_local_resultados}/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
-#          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')))
-          ssh_client.close()
-#  elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
-#    print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
-#
-#  tempo_final = timeit.default_timer()
-#  print (f'\nDuracao dos experimentos {nome_arq_algoritmo} nos hooks XDP {lista_modos_exec_xdp} com tamanho de pacotes {lista_tam_pacotes_gerar} e variacao de IP {lista_variacao_ips} : {(tempo_final-tempo_inicial)} segundos')
-#
-#ssh_client.close()
-#
-#tempo_final_geral = timeit.default_timer()
-#print (f'\nDuracao total das execuções: {(tempo_final_geral-tempo_inicial_geral)} segundos')
+          #arq_save_resultado=f"{ssh_local_resultados}/{pasta_resultado}/res_pkt{tam_packet}_ebpf_{modo_xdp}+{modo_execucao_programa_ebpf}_varIP_{var_ip}_varMAC_{lista_variacao_macs}.txt"
+          #stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'python3 {ssh_local_scripts_python}/gera_csv_resultado.py --arquivo {arq_save_resultado}')))
+
+  elif(modo_execucao_programa_ebpf == 'af_xdp'):   #modo exec eBPF com AF_XDP
+    print('Modo de execucao do programa ebpf(af_xdp), ainda nao desenvolvido!')
+
+  tempo_final = timeit.default_timer()
+  print (f'\nDuracao dos experimentos {nome_arq_algoritmo} nos hooks XDP {lista_modos_exec_xdp} com tamanho de pacotes {lista_tam_pacotes_gerar} e variacao de IP {lista_variacao_ips} : {(tempo_final-tempo_inicial)} segundos')
+
+
+tempo_final_geral = timeit.default_timer()
+print (f'\nDuracao total das execuções: {(tempo_final_geral-tempo_inicial_geral)} segundos')
+ftp_client.close()
