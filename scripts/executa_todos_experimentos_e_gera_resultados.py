@@ -70,7 +70,7 @@ for experimento in lista_experimentos:
     arq_algoritmo.write('\t.type = BPF_MAP_TYPE_PERCPU_ARRAY,\n')
     arq_algoritmo.write('\t.key_size    = sizeof(int),\n')
     arq_algoritmo.write('\t.value_size  = sizeof(__u32),\n')
-    arq_algoritmo.write('\t.max_entries = 64,\n};')
+    arq_algoritmo.write('\t.max_entries = 64,\n};\n\n')
 
     arq_algoritmo.write('SEC("xdp_pass")\n')
     arq_algoritmo.write('int xdp_pass_func(struct xdp_md *ctx){\n')
@@ -89,7 +89,7 @@ for experimento in lista_experimentos:
     
     arq_algoritmo.write('SEC("xdp_drop")\n')
     arq_algoritmo.write('int xdp_drop_func(struct xdp_md *ctx){\n')
-    arq_algoritmo.write('\treturn XDP_DROP;\n}\n')
+    arq_algoritmo.write('\treturn XDP_DROP;\n}\n\n')
     arq_algoritmo.write('char _license[] SEC("license") = "GPL";\n')
     arq_algoritmo.close()
   else:
