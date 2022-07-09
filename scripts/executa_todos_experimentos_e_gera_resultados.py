@@ -135,7 +135,7 @@ for experimento in lista_experimentos:
       for tam_packet in lista_tam_pacotes_gerar:  #vai fazer o experimento para cada um dos tamanhos de pacotes
         for var_ip in lista_variacao_ips:           #vai fazer o experimento para cada variacao de IPs
           #executa o gerador e coleta os dados tx/rx dos espeximento e salva dentro de uma pasta num arquivo especifico
-          stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'ls /root')))
+          stdin,stdout,stderr= ssh_client.exec_command(f'ls /root')
           stdin,stdout,stderr= ssh_client.exec_command('echo %s|sudo %s' % (senha_server, (f'bash {ssh_local_gerador}/setupNetGen.sh {tam_packet} {modo_xdp} {var_ip} 00:00:00:00:00:00 {timeout_gerador} {pasta_resultado}')))
           
           #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
