@@ -11,6 +11,7 @@ lst_instrucoes= []
 string_struction= ""
 arq_dest= ""
 repeticoes= 1
+usuario= 'igorcapeletti'
 local_scripts_ebpf= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf'
 
 #main -----------------------------------------------------------------------------------
