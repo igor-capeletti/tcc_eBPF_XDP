@@ -115,10 +115,10 @@ fi
 ip link show ens2np0
 
 #exibe informações da execução do script
-echo -e "\n\n\nExecução do experimento: -------------------"
+echo -e "Execução do experimento: -------------------"
 echo "Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
 echo "Pasta do Programa BPF: $programa_bpf"
 echo "Forma de execução: $tipo_exec_prog"
 echo "Seção de execução: $secao_exec"
 echo "Modo Hook XDP: $modo_load"
-echo -e "--------------------------------------------\n\n\n\n\n\n\n"
+echo -e "-----------------------------------------------------------------------------------------------------------------\n\n\n\n\n\n\n"
