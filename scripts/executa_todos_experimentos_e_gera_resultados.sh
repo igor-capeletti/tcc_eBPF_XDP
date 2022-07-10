@@ -74,15 +74,12 @@ for it_combined in "1" "2" "4" "8"; do
       cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
       echo "Copiou novo programa para pasta de execucao do programa ebpf"
 
-      #remove e cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado
-      echo "Removeu pasta de resultado $pasta_resultado da maquina geradora de trafego"
-      
+      #cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
       echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
       echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
 
       #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
-      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/xdp_prog_kern.c
+      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo
       echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
 
