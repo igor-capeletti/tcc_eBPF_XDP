@@ -55,6 +55,7 @@ cont_e=1
 
 #vai iterar nos modos combined escolhidos
 for it_combined in "1" "2" "4" "8"; do
+  echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
