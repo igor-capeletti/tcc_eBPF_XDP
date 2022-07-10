@@ -119,7 +119,7 @@ for it_combined in "1" "2" "4" "8"; do
             ip addr add $endsubredeO dev $nome_interface
           fi
 
-          cd /home/igorcapeletti/libbpf/xdp-tutorial/$programa_bpf
+          cd /home/$usuario/libbpf/xdp-tutorial/$programa_bpf
           make
 
           if [ $tipo_exec_prog = "1" ]; then
