@@ -125,7 +125,12 @@ for it_combined in "1" "2" "4" "8"; do
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
               #faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos
-              echo "$senha_ssh|sudo bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              #chama shell script que ativa o gerador para gerar trafego
+              #ssh -t $ssh_usuario_gerador@$ssh_ip_gerador sudo bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado
+              
+              #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
+              #arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
+              #echo "python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
               
               
               #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
