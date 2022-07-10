@@ -75,15 +75,17 @@ for it_combined in "1" "2" "4" "8"; do
       cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
 
       #remove e cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      echo "Removeu pasta de resultado $pasta_resultado da maquina geradora de trafego"
       ssh $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado
-      echo "Criou nova pasta pasta de resultado $pasta_resultado da maquina geradora de trafego"
+      echo "Removeu pasta de resultado $pasta_resultado da maquina geradora de trafego"
+      
       ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
+      echo "Criou nova pasta pasta de resultado $pasta_resultado da maquina geradora de trafego"
 
       #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
-      echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
       scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/xdp_prog_kern.c
+      echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
+      
       #modo exec eBPF normal ou AF_XDP
       if [ $modo_execucao_programa_ebpf = "normal" ]; then
         #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher
