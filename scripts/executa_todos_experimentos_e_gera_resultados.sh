@@ -25,7 +25,17 @@ ssh_local_gerador="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/gerador_trafeg
 cont_inicial=0
 cont_final=10500
 cont_intervalo=500
-nome_arq_algoritmo=""
+nome_arq_algoritmo=" "
+timeout_gerador="120"    #numero de execucoes que o gerador ira mandar/receber pacotes
+arq_save_resultado=" "
+tipo_rede="single"
+programa_bpf="basic02-prog-by-name"
+tipo_exec_prog="1"
+modo_load=" "
+secao_exec=" "
+endsubredeI="10.10.10.10/24"
+endsubredeO="10.10.10.11/24"
+ 
 
 cont_a=1
 cont_b=1
@@ -55,11 +65,90 @@ for it_combined in "1" "2" "4" "8"; do
       rm -r $ssh_local_resultados/$pasta_resultado
       mkdir $ssh_local_resultados/$pasta_resultado
 
-      #prints
-      echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
-      echo "  Combined =  $it_combined"
-      echo "  Algoritmo = $nome_arq_algoritmo"
-      echo -e "\n"
+      #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
+      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/xdp_prog_kern.c
+
+      #modo exec eBPF normal ou AF_XDP
+      if [ $modo_execucao_programa_ebpf = "normal" ]; then
+        #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher
+        for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
+          #desabilita todos os programas xdp das interfaces de rede
+          ip link set dev ens2np0 xdpgeneric off
+          #ip link set dev ens2np1 xdpgeneric off
+          ip link set dev ens2np0 xdpdrv off
+          #ip link set dev ens2np1 xdpdrv off
+          ip link set dev ens2np0 xdpoffload off
+          #ip link set dev ens2np1 xdpoffload off
+
+          #derruba interfaces de rede
+          ip link set dev ens2np0 down
+          #ip link set dev ens2np1 down
+
+          #configuracao das interfaces de rede
+          if [ $tipo_rede = "single" ]; then
+            #ativa links das interfaces
+            ip link set dev ens2np0 up
+            #seta ip para interface
+            #ifconfig ens2np0 $endsubredeI up
+            ip addr add $endsubredeI dev ens2np0
+            #route add default gw 10.10.10.10 ens2np0
+          elif [ $tipo_rede = "dual" ]; then
+            #ativa links das interfaces de rede
+            ip link set dev ens2np0 up
+            ip link set dev ens2np1 up
+            #seta ip para cada interface
+            #ifconfig ens2np0 $endsubredeI up
+            ip addr add $endsubredeI dev ens2np0
+            #ifconfig ens2np1 $endsubredeO up
+            ip addr add $endsubredeO dev ens2np1
+          fi
+
+          cd /home/igorcapeletti/libbpf/xdp-tutorial/$programa_bpf
+          make
+
+          if [ $tipo_exec_prog = "1" ]; then
+            #llvm-objdump -S xdp_prog_kern.o
+            #ativar programa ebpf na interface ens2f0
+            ip link set dev ens2np0 $it_modo_xdp obj xdp_prog_kern.o sec $secao_programa_ebpf
+          elif [ $tipo_exec_prog = "2" ]; then
+            if [ $it_modo_xdp = "xdpgeneric" ]; then
+              ./xdp_loader --dev ens2np0 --force --progsec $secao_programa_ebpf --skb-mode
+            elif [ $it_modo_xdp = "xdpdrv" ]; then
+              ./xdp_loader --dev ens2np0 --force --progsec $secao_programa_ebpf --native-mode
+            elif [ $it_modo_xdp = "xdpoffload" ]; then
+              ./xdp_loader --dev ens2np0 --force --progsec $secao_programa_ebpf --offload-mode
+            fi
+          fi
+
+          #vai gerar trafego para cada um dos tamanhos de pacotes especificados
+          for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
+            #vai fazer o experimento para cada variacao de IPs
+            for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
+              #faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos
+              echo "$senha_ssh|sudo bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              
+              
+              #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
+              
+          
+              #prints
+              echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
+              echo "  Combined =  $it_combined"
+              echo "  Algoritmo = $nome_arq_algoritmo"
+              echo "  Modo Hook XDP = $it_modo_xdp"
+              echo "  Tamanho dos pacotes gerados = $it_tam_packet"
+              echo "  Variacao de enderecos IP = $it_var_ip"
+              echo "  Outras informacoes: ---------"
+              echo "    Execucao do programa eBPF em modo = $modo_execucao_programa_ebpf"
+              echo "    Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
+              echo "    Forma de execução = $tipo_exec_prog"
+              echo "    Seção de execução = $secao_programa_ebpf"
+              ip link show ens2np0    #visualizar informacao da interface de rede
+              echo -e "\n"
+            done
+          done
+        done
+      fi
       cont_b=$((cont_b+1))
     done
   fi
