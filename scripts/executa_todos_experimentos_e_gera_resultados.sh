@@ -20,7 +20,7 @@ ssh_senha_gerador="12345678"
 ssh_local_scripts_shell="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/shell_script"
 ssh_local_scripts_ebpf="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/ebpf"
 ssh_local_scripts_python="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/python"
-ssh_local_resultados="/home/$ssh_usuario_gerador/tcc_eBPF_XDP/resultados"
+ssh_local_resultados="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/resultados"
 ssh_local_gerador="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/gerador_trafego"
 
 #variacao do algoritmo for
