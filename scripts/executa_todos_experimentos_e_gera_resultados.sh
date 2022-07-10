@@ -1,4 +1,5 @@
 #Execucao:
+#bash /home/igorubuntu/github/tcc_eBPF_XDP/scripts/executa_todos_experimentos_e_gera_resultados.sh
 
 #variaveis globais -----------------------------------------------------
 #usuario="igorubuntu"
