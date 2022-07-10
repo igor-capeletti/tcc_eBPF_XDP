@@ -163,7 +163,6 @@ for it_combined in "1" "2" "4" "8"; do
               echo "    Forma de execução = $tipo_exec_prog"
               echo "    Seção de execução = $secao_programa_ebpf"
               ip link show $nome_interface    #visualizar informacao da interface de rede
-              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S ls /root"
               echo -e "\n"
               cont_e=$((cont_e+1))
             done
