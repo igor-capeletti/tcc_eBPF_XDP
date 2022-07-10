@@ -138,8 +138,8 @@ for it_combined in "1" "2" "4" "8"; do
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
             #vai fazer o experimento para cada variacao de IPs
-            for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
-              echo "..."
+            for it_var_ip in "0.0.0.0" "0.0.0.255"; do
+              echo "sleep"
               echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S sleep "2"
               echo "..."
 
