@@ -55,10 +55,10 @@ cont_e=1
 
 #vai iterar nos modos combined escolhidos
 for it_combined in "1" "2" "4" "8"; do
-  echo "$PASS | sudo -S ethtool -L $nome_interface combined $it_combined"
+  echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
-    for it_experimento in {1..10000..500}; do
+    for it_experimento in {0..10000..500}; do
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
       pasta_resultado=$nome_arq_algoritmo
 
@@ -75,10 +75,10 @@ for it_combined in "1" "2" "4" "8"; do
       echo "Copiou novo programa para pasta de execucao do programa ebpf"
 
       #remove e cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      echo "$PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado"
+      echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado
       echo "Removeu pasta de resultado $pasta_resultado da maquina geradora de trafego"
       
-      echo "$PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado"
+      echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
       echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
 
       #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
