@@ -47,14 +47,10 @@ nome_interface="enp4s0f1"  #iface not igor
 #nome_interface="ens2np1"   #iface lab igor netronome
  
 
-cont_a=1
-cont_b=1
-cont_c=1
-cont_d=1
-cont_e=1
+cont=1
 
 #vai iterar nos modos combined escolhidos
-for it_combined in "1" "2" "4" "8"; do
+for it_combined in "2" "4" "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
@@ -138,10 +134,10 @@ for it_combined in "1" "2" "4" "8"; do
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
             #vai fazer o experimento para cada variacao de IPs
-            for it_var_ip in "0.0.0.0" "0.0.0.255"; do
-              echo "sleep"
-              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S sleep "2"
-              echo "..."
+            for it_var_ip in "0.0.0.255"; do
+              #echo "sleep"
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S sleep "2"
+              #echo "..."
 
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
@@ -151,7 +147,7 @@ for it_combined in "1" "2" "4" "8"; do
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
 
               #prints
-              echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
+              echo "Experimento $cont/$((3*21*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
@@ -164,19 +160,15 @@ for it_combined in "1" "2" "4" "8"; do
               echo "    Seção de execução = $secao_programa_ebpf"
               ip link show $nome_interface    #visualizar informacao da interface de rede
               echo -e "\n"
-              cont_e=$((cont_e+1))
+              cont=$((cont+1))
             done
-            cont_e=$((0))
-            cont_d=$((cont_d+1))
+            cont=$((cont+1))
           done
-          cont_d=$((0))
-          cont_c=$((cont_c+1))
+          cont=$((cont+1))
         done
       fi
-      cont_c=$((0))
-      cont_b=$((cont_b+1))
+      cont=$((cont+1))
     done
   fi
-  cont_b=$((0))
-  cont_a=$((cont_a+1))
+  cont=$((cont+1))
 done
