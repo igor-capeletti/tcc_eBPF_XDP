@@ -60,7 +60,7 @@ for it_combined in "1" "2" "4" "8"; do
   if [ $tipo_programa_ebpf = "for" ]; then
     for it_experimento in {0..10000..500}; do
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
-      pasta_resultado=$nome_arq_algoritmo
+      pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
 
       #gera programa ebpf escolhido
       python3 /home/$usuario/github/tcc_eBPF_XDP/scripts/python/gerador_programas_ebpf.py --instrucao $tipo_programa_ebpf --inicio $cont_inicial --fim $it_experimento
