@@ -63,8 +63,8 @@ for it_combined in "1" "2" "4" "8"; do
       cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
 
       #remove e cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      ssh -t $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado
-      ssh -t $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
+      ssh $ssh_usuario_gerador@$ssh_ip_gerador rm -r $ssh_local_resultados/$pasta_resultado
+      ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
 
       #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
       scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/xdp_prog_kern.c
@@ -127,11 +127,11 @@ for it_combined in "1" "2" "4" "8"; do
             for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
               #faz acesso ssh com maquina geradora de trafego e cria trafego para os tamanhos de pacotes escolhidos
               #chama shell script que ativa o gerador para gerar trafego
-              ssh -t $ssh_usuario_gerador@$ssh_ip_gerador sudo bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado
               
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
               arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
-              ssh -t $ssh_usuario_gerador@$ssh_ip_gerador python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado
               
               
               #6)-Carrega os resultados do experimento e adiciona as medias em novo arquivo para gerar graficos ---------------
