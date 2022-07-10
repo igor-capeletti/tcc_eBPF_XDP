@@ -1,5 +1,5 @@
 #Execucao:
-#bash /home/igorubuntu/github/tcc_eBPF_XDP/scripts/executa_todos_experimentos_e_gera_resultados.sh
+#bash /home/igorcapeletti/github/tcc_eBPF_XDP/scripts/executa_todos_experimentos_e_gera_resultados.sh
 
 #variaveis globais -----------------------------------------------------
 #usuario="igorubuntu"
@@ -151,10 +151,16 @@ for it_combined in "1" "2" "4" "8"; do
               echo "    Seção de execução = $secao_programa_ebpf"
               ip link show ens2np0    #visualizar informacao da interface de rede
               echo -e "\n"
+              cont_e=$((cont_e+1))
             done
+            cont_e=$((0))
+            cont_d=$((cont_d+1))
           done
+          cont_d=$((0))
+          cont_c=$((cont_c+1))
         done
       fi
+      cont_c=$((0))
       cont_b=$((cont_b+1))
     done
   fi
