@@ -84,95 +84,98 @@ for it_combined in "1" "2" "4" "8"; do
       echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
 
-    # #modo exec eBPF normal ou AF_XDP
-    # if [ $modo_execucao_programa_ebpf = "normal" ]; then
-    #   #4)-Compila programa e carrega para a interface de rede nos modos xdp que escolher
-    #   for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
-    #     #desabilita todos os programas xdp das interfaces de rede
-    #     ip link set dev $nome_interface xdpgeneric off
-    #     #ip link set dev ens2np1 xdpgeneric off
-    #     ip link set dev $nome_interface xdpdrv off
-    #     #ip link set dev ens2np1 xdpdrv off
-    #     ip link set dev $nome_interface xdpoffload off
-    #     #ip link set dev ens2np1 xdpoffload off
+      #modo exec eBPF normal ou AF_XDP
+      if [ $modo_execucao_programa_ebpf = "normal" ]; then
+        for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
+          #desabilita todos os programas xdp das interfaces de rede
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpgeneric off
+          #ip link set dev ens2np1 xdpgeneric off
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpdrv off
+          #ip link set dev ens2np1 xdpdrv off
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpoffload off
+          #ip link set dev ens2np1 xdpoffload off
 
-    #     #derruba interfaces de rede
-    #     ip link set dev $nome_interface down
-    #     #ip link set dev ens2np1 down
+          #derruba interfaces de rede
+          echo $PASS | sudo -S ip link set dev $nome_interface down
+          #ip link set dev ens2np1 down
 
-    #     #configuracao das interfaces de rede
-    #     if [ $tipo_rede = "single" ]; then
-    #       #ativa links das interfaces
-    #       ip link set dev $nome_interface up
-    #       #seta ip para interface
-    #       #ifconfig ens2np0 $endsubredeI up
-    #       ip addr add $endsubredeI dev $nome_interface
-    #       #route add default gw 10.10.10.10 ens2np0
-    #     elif [ $tipo_rede = "dual" ]; then
-    #       #ativa links das interfaces de rede
-    #       ip link set dev $nome_interface up
-    #       ip link set dev $nome_interface up
-    #       #seta ip para cada interface
-    #       #ifconfig ens2np0 $endsubredeI up
-    #       ip addr add $endsubredeI dev $nome_interface
-    #       #ifconfig ens2np1 $endsubredeO up
-    #       ip addr add $endsubredeO dev $nome_interface
-    #     fi
+          #configuracao das interfaces de rede
+          if [ $tipo_rede = "single" ]; then
+            #ativa links das interfaces
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            #seta ip para interface
+            #ifconfig ens2np0 $endsubredeI up
+            echo $PASS | sudo -S ip addr add $endsubredeI dev $nome_interface
+            #route add default gw 10.10.10.10 ens2np0
+          elif [ $tipo_rede = "dual" ]; then
+            #ativa links das interfaces de rede
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            #seta ip para cada interface
+            #ifconfig ens2np0 $endsubredeI up
+            echo $PASS | sudo -S ip addr add $endsubredeI dev $nome_interface
+            #ifconfig ens2np1 $endsubredeO up
+            echo $PASS | sudo -S ip addr add $endsubredeO dev $nome_interface
+          fi
 
-    #     cd /home/$usuario/libbpf/xdp-tutorial/$programa_bpf
-    #     make
+          cd /home/$usuario/libbpf/xdp-tutorial/$programa_bpf
+          make
 
-    #     if [ $tipo_exec_prog = "1" ]; then
-    #       #llvm-objdump -S xdp_prog_kern.o
-    #       #ativar programa ebpf na interface ens2f0
-    #       ip link set dev $nome_interface $it_modo_xdp obj xdp_prog_kern.o sec $secao_programa_ebpf
-    #     elif [ $tipo_exec_prog = "2" ]; then
-    #       if [ $it_modo_xdp = "xdpgeneric" ]; then
-    #         ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --skb-mode
-    #       elif [ $it_modo_xdp = "xdpdrv" ]; then
-    #         ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --native-mode
-    #       elif [ $it_modo_xdp = "xdpoffload" ]; then
-    #         ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --offload-mode
-    #       fi
-    #     fi
+          if [ $tipo_exec_prog = "1" ]; then
+            #llvm-objdump -S xdp_prog_kern.o
+            #ativar programa ebpf na interface ens2f0
+            echo $PASS | sudo -S ip link set dev $nome_interface $it_modo_xdp obj xdp_prog_kern.o sec $secao_programa_ebpf
+          elif [ $tipo_exec_prog = "2" ]; then
+            if [ $it_modo_xdp = "xdpgeneric" ]; then
+              echo $PASS | sudo -S ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --skb-mode
+            elif [ $it_modo_xdp = "xdpdrv" ]; then
+              echo $PASS | sudo -S ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --native-mode
+            elif [ $it_modo_xdp = "xdpoffload" ]; then
+              echo $PASS | sudo -S ./xdp_loader --dev $nome_interface --force --progsec $secao_programa_ebpf --offload-mode
+            fi
+          fi
 
-    #     #vai gerar trafego para cada um dos tamanhos de pacotes especificados
-    #     for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
-    #       #vai fazer o experimento para cada variacao de IPs
-    #       for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
-    #         #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
-    #         #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+          #vai gerar trafego para cada um dos tamanhos de pacotes especificados
+          for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
+            #vai fazer o experimento para cada variacao de IPs
+            for it_var_ip in "0.0.0.0" "0.0.0.255" "0.0.255.255" "0.255.255.255" "255.255.255.255"; do
+              echo "..."
+              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S sleep "2"
+              echo "..."
 
-    #         #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
-    #         arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
-    #         #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
-    #     
-    #         #prints
-    #         echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
-    #         echo "  Combined =  $it_combined"
-    #         echo "  Algoritmo = $nome_arq_algoritmo"
-    #         echo "  Modo Hook XDP = $it_modo_xdp"
-    #         echo "  Tamanho dos pacotes gerados = $it_tam_packet"
-    #         echo "  Variacao de enderecos IP = $it_var_ip"
-    #         echo "  Outras informacoes: ---------"
-    #         echo "    Execucao do programa eBPF em modo = $modo_execucao_programa_ebpf"
-    #         echo "    Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
-    #         echo "    Forma de execução = $tipo_exec_prog"
-    #         echo "    Seção de execução = $secao_programa_ebpf"
-    #         ip link show $nome_interface    #visualizar informacao da interface de rede
-    #         echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S ls /root"
-    #         echo -e "\n"
-    #         cont_e=$((cont_e+1))
-    #       done
-    #       cont_e=$((0))
-    #       cont_d=$((cont_d+1))
-    #     done
-    #     cont_d=$((0))
-    #     cont_c=$((cont_c+1))
-    #   done
-    # fi
-    # cont_c=$((0))
-    # cont_b=$((cont_b+1))
+              #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+
+              #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
+              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+
+              #prints
+              echo "Experimento $cont_a.$cont_b.$cont_c.$cont_d.$cont_e: ----------------------------------"
+              echo "  Combined =  $it_combined"
+              echo "  Algoritmo = $nome_arq_algoritmo"
+              echo "  Modo Hook XDP = $it_modo_xdp"
+              echo "  Tamanho dos pacotes gerados = $it_tam_packet"
+              echo "  Variacao de enderecos IP = $it_var_ip"
+              echo "  Outras informacoes: ---------"
+              echo "    Execucao do programa eBPF em modo = $modo_execucao_programa_ebpf"
+              echo "    Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
+              echo "    Forma de execução = $tipo_exec_prog"
+              echo "    Seção de execução = $secao_programa_ebpf"
+              ip link show $nome_interface    #visualizar informacao da interface de rede
+              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S ls /root"
+              echo -e "\n"
+              cont_e=$((cont_e+1))
+            done
+            cont_e=$((0))
+            cont_d=$((cont_d+1))
+          done
+          cont_d=$((0))
+          cont_c=$((cont_c+1))
+        done
+      fi
+      cont_c=$((0))
+      cont_b=$((cont_b+1))
     done
   fi
   cont_b=$((0))
