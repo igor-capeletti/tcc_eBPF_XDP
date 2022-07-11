@@ -1,6 +1,16 @@
 #Execucao (em modo usuario sem sudo):
 #bash /home/igorcapeletti/github/tcc_eBPF_XDP/scripts/executa_todos_experimentos_e_gera_resultados.sh
 
+
+#executar ao iniciar a maquina -----------------
+#rmmod nfp
+#modprobe nfp
+#ethtool -L ens2np0 combined 8
+#cd /home/igorcapeletti/github/nfp-drv-kmods/tools
+#bash set_irq_affinity.sh ens2np0
+#--------------------------------------------------------
+
+
 #variaveis globais -----------------------------------------------------
 usuario="igorcapeletti"
 tipo_programa_ebpf="for"
