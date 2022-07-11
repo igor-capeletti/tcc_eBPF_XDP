@@ -138,7 +138,7 @@ for it_combined in "8"; do
             for it_var_ip in "0.0.0.255"; do
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
               echo "Gerador enviando e recenbendo tráfego..."
-              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado
               
               
               #sleep "130"
