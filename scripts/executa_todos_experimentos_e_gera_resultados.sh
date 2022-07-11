@@ -1,9 +1,8 @@
-#Execucao:
+#Execucao (em modo usuario sem sudo):
 #bash /home/igorcapeletti/github/tcc_eBPF_XDP/scripts/executa_todos_experimentos_e_gera_resultados.sh
 
 #variaveis globais -----------------------------------------------------
-usuario="igorubuntu"
-#usuario="igorcapeletti"
+usuario="igorcapeletti"
 tipo_programa_ebpf="for"
 secao_programa_ebpf="xdp_pass"
 modo_execucao_programa_ebpf="normal"
@@ -14,9 +13,7 @@ local_scripts_python="/home/$usuario/github/tcc_eBPF_XDP/scripts/python"
 
 
 ssh_usuario_gerador="igorcapeletti"
-#ssh_ip_gerador="200.132.136.84"
-ssh_ip_gerador="200.132.136.81"
-ssh_senha_gerador="12345678"
+ssh_ip_gerador="200.132.136.84"
 ssh_local_scripts_shell="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/shell_script"
 ssh_local_scripts_ebpf="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/ebpf"
 ssh_local_scripts_python="/home/$ssh_usuario_gerador/github/tcc_eBPF_XDP/scripts/python"
@@ -38,12 +35,12 @@ secao_exec=" "
 endsubredeI="10.10.10.10/24"
 endsubredeO="10.10.10.11/24"
 
-nome_interface="enp4s0f1"  #iface not igor
+#nome_interface="enp4s0f1"  #iface not igor
 #nome_interface="eno1"      #iface lab igor
 #nome_interface="eno2"      #iface lab igor
 #nome_interface="ens2f0"    #iface lab igor
 #nome_interface="ens2f1"    #iface lab igor
-#nome_interface="ens2np0"   #iface lab igor netronome
+nome_interface="ens2np0"   #iface lab igor netronome
 #nome_interface="ens2np1"   #iface lab igor netronome
  
 
