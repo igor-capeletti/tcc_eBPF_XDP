@@ -9,7 +9,7 @@ combined=$4
 timeout=$5
 nome_pasta_resultados=$6
 
-arq_save="/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/$nome_pasta_resultados/res_combined_$combined+algoritmo_$nome_pasta_resultados+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
+arq_save="/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/$nome_pasta_resultados/res_combined_$combined+algoritmo_$nome_pasta_resultados+pkt_$packet_size+ebpf_$modo_hook_xdp+varIP_$var_dst_IP+timeout_$timeout.txt"
 
 cd /opt/MoonGen
 
