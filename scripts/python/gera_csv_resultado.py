@@ -26,7 +26,6 @@ cols= ['Time', 'TX Packets', 'Packet Rate Avg', 'Packet Rate', 'RX Packets','Pac
 cols_result= ['tx_packet/rx_packet', 'tx_rate/rx_rate', 'tx_rate_avg/rx_rate_avg']
 
 
-
 #tratamento de argumento -------------------------------------------
 parser = argparse.ArgumentParser()
 parser.add_argument("--arquivo", help="Define nome do arquivo para calcular o valor dos resultados.")
@@ -66,21 +65,22 @@ df.rename(columns = {'Time':'time', 'TX Packets':'tx_packets', 'Packet Rate Avg'
 df_result= pd.DataFrame(np.zeros(shape=(30,3)), columns=cols_result)
 
 
+
 #calcular media para cada passo executado do teste
 i= 0
 j= 0
 while(i < int((len(df.index))/2)):
   #calculo da relacao em cada passo de packets tx-rx
   df_result['tx_packet/rx_packet'][j]= df.tx_packets[i]-df.rx_packets[i+1]
-  print(f'{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}')
+  #print(f'{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}')
 
   #calculo da relacao em cada passo da taxa de packets tx-rx
   df_result['tx_rate/rx_rate'][j]= df.tx_packet_rate[i]-df.rx_packet_rate[i+1]
-  print(f'{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}')
+  #print(f'{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}')
 
   #calculo da relacao em cada passo da media da taxa de packets tx-rx
   df_result['tx_rate_avg/rx_rate_avg'][j]= df.tx_packet_rate_avg[i]-df.rx_packet_rate_avg[i+1]
-  print(f'{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}')
+  #print(f'{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}')
   i+=2
   j+=1
 
@@ -95,7 +95,22 @@ media_avg_rate_packets_tx_rx= df_result['tx_rate_avg/rx_rate_avg'].mean()
 local_end= endereco_file.split('/')
 end_pasta= f'{local_end[0]}/{local_end[1]}/{local_end[2]}/{local_end[3]}/{local_end[4]}/{local_end[5]}/{local_end[6]}'
 arq_resultados= open(f'{end_pasta}/resultado_final.txt', 'a')
-arq_resultados.write(f'{local_end[7]}\t{media_packets_tx_rx}\t{media_rate_packets_tx_rx}\t{media_avg_rate_packets_tx_rx}\n')
+lista_variaveis= local_end[7].split('_')
+
+combined= lista_variaveis.split('combined_')[1]
+combined= combined.split('+')[0]
+algoritmo= lista_variaveis.split('algoritmo_')[1]
+algoritmo= algoritmo.split('+')[0]
+tam_packet= lista_variaveis.split('pkt_')[1]
+tam_packet= tam_packet.split('+')[0]
+ebpf= lista_variaveis.split('ebpf_')[1]
+ebpf= ebpf.split('+')[0]
+varIP= lista_variaveis.split('varIP_')[1]
+varIP= varIP.split('+')[0]
+timeout= lista_variaveis.split('timeout_')[1]
+timeout= timeout.split('.txt')[0]
+
+arq_resultados.write(f'{combined}\t{algoritmo}\t{tam_packet}\t{ebpf}\t{varIP}\t{timeout}\t{media_packets_tx_rx}\t{media_rate_packets_tx_rx}\t{media_avg_rate_packets_tx_rx}\n')
 arq_resultados.close()
 
 
