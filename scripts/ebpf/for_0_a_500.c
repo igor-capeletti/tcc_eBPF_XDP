@@ -25,7 +25,7 @@ int xdp_pass_func(struct xdp_md *ctx){
 	goto out;
 
 out:
-	if(var <= 10000){
+	if(var <= 500){
 		var= var+1;
 		pkt_count = bpf_map_lookup_elem(&xdp_stats_map, &index);
 		goto out;
