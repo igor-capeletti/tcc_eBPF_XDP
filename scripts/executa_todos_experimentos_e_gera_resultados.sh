@@ -47,14 +47,15 @@ nome_interface="ens2np0"   #iface lab igor netronome
 cont=1
 
 #vai iterar nos modos combined escolhidos
-#for it_combined in "2" "4" "8"; do
-for it_combined in "4" "8"; do
+#for it_combined in "1"; do
+for it_combined in "1" "2" "4" "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
+    #for it_experimento in "0"; do
     #for it_experimento in {0..10000..500}; do
-    for it_experimento in {0..500..500}; do
+    for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
       pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
 
@@ -82,7 +83,7 @@ for it_combined in "4" "8"; do
       #modo exec eBPF normal ou AF_XDP
       if [ $modo_execucao_programa_ebpf = "normal" ]; then
         #for it_modo_xdp in "xdpgeneric" "xdpdrv" "xdpoffload"; do
-        for it_modo_xdp in "xdpgeneric"; do
+        for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
           #desabilita todos os programas xdp das interfaces de rede
           echo $PASS | sudo -S ip link set dev $nome_interface xdpgeneric off
           #ip link set dev ens2np1 xdpgeneric off
@@ -132,12 +133,12 @@ for it_combined in "4" "8"; do
           fi
 
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
-          #for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
-          for it_tam_packet in "64"; do 
+          #for it_tam_packet in "64"; do
+          for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
               #prints
-              echo "Experimento $cont/$((3*21*2*6)): ----------------------------------"
+              echo "Experimento $cont/$((4*9*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
@@ -159,7 +160,7 @@ for it_combined in "4" "8"; do
               
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
               arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
-              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
               
               cont=$((cont+1))
             done
