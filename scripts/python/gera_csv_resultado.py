@@ -72,15 +72,15 @@ j= 0
 while(i < int((len(df.index))/2)):
   #calculo da relacao em cada passo de packets tx-rx
   df_result['tx_packet/rx_packet'][j]= df.tx_packets[i]-df.rx_packets[i+1]
-  print(f'{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}')
+  print(f"{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}")
 
   #calculo da relacao em cada passo da taxa de packets tx-rx
   df_result['tx_rate/rx_rate'][j]= df.tx_packet_rate[i]-df.rx_packet_rate[i+1]
-  print(f'{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}')
+  print(f"{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}")
 
   #calculo da relacao em cada passo da media da taxa de packets tx-rx
   df_result['tx_rate_avg/rx_rate_avg'][j]= df.tx_packet_rate_avg[i]-df.rx_packet_rate_avg[i+1]
-  print(f'{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}')
+  print(f"{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}")
   i+=2
   j+=1
 

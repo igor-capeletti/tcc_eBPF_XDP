@@ -33,3 +33,5 @@ python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
 
 #execucao do gerador de trafego a partir dos parametros passados
 /opt/MoonGen/build/MoonGen ./examples/netronome-packetgen/packetgen.lua -tx 0 -rx 0 --dst-ip 10.10.10.10 --dst-ip-vary $var_dst_IP --dst-mac 00:15:4d:13:5b:d3 --dst-mac-vary 00:00:00:00:00:00 --src-mac 90:E2:BA:4E:8A:A4 --src-mac-vary 00:00:00:00:00:00 --src-ip 10.10.10.1 --src-ip-vary 0.0.0.0 --pkt-size $packet_size --timeout $timeout --file-prefix $arq_save 
+
+echo "Executou gerador!"
