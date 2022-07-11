@@ -144,8 +144,8 @@ for it_combined in "8"; do
               #sleep "130"
     
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
-              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
-              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
+              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
 
               #prints
               echo "Experimento $cont/$((3*21*2*6)): ----------------------------------"
