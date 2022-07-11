@@ -4,8 +4,7 @@ import argparse
 #python3 --instrucao for --inicio 0 --fim 0 --intervalo 0
 
 #variaveis globais
-#usuario= 'igorcapeletti'
-usuario= 'igorubuntu'
+usuario= 'igorcapeletti'
 local_scripts_ebpf= f'/home/{usuario}/github/tcc_eBPF_XDP/scripts/ebpf'
 
 #main -----------------------------------------------------------------------------------
