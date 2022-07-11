@@ -137,10 +137,11 @@ for it_combined in "8"; do
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
+              echo "Gerador enviando e recenbendo tráfego..."
               echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               
-              echo "Gerador enviando e recenbendo tráfego..."
-              sleep "130"
+              
+              #sleep "130"
     
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
               arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
