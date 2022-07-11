@@ -162,13 +162,9 @@ for it_combined in "2" "4" "8"; do
               echo -e "\n"
               cont=$((cont+1))
             done
-            cont=$((cont+1))
           done
-          cont=$((cont+1))
         done
       fi
-      cont=$((cont+1))
     done
   fi
-  cont=$((cont+1))
 done
