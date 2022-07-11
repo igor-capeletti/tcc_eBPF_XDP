@@ -1,6 +1,6 @@
 #Ex execucao: 
 #bash <nome_exec> <tam_packet> <hook_xdp> <var_IP> <combined> <timeout_exec> <nome_pasta_salvar>
-#bash setupNetGen.sh 64 xdpgeneric 0.0.0.10 00:00:00:00:00:00 60 pasta
+#bash setupNetGen.sh 64 xdpgeneric 0.0.0.10 8 60 pasta
 
 packet_size=$1
 modo_hook_xdp=$2

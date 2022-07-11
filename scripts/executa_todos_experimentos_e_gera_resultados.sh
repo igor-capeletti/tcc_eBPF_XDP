@@ -50,12 +50,14 @@ nome_interface="enp4s0f1"  #iface not igor
 cont=1
 
 #vai iterar nos modos combined escolhidos
-for it_combined in "2" "4" "8"; do
+#for it_combined in "2" "4" "8"; do
+for it_combined in "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
-    for it_experimento in {0..10000..500}; do
+    #for it_experimento in {0..10000..500}; do
+    for it_experimento in {0..500..500}; do
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
       pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
 
@@ -82,7 +84,8 @@ for it_combined in "2" "4" "8"; do
 
       #modo exec eBPF normal ou AF_XDP
       if [ $modo_execucao_programa_ebpf = "normal" ]; then
-        for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
+        #for it_modo_xdp in "xdpgeneric" "xdpdrv" "xdpoffload"; do
+        for it_modo_xdp in "xdpgeneric"; do
           #desabilita todos os programas xdp das interfaces de rede
           echo $PASS | sudo -S ip link set dev $nome_interface xdpgeneric off
           #ip link set dev ens2np1 xdpgeneric off
@@ -132,19 +135,19 @@ for it_combined in "2" "4" "8"; do
           fi
 
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
-          for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do 
+          #for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
+          for it_tam_packet in "64"; do 
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
-              #echo "sleep"
-              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador sudo -S sleep "2"
-              #echo "..."
-
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
-              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
-
+              echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              
+              echo "Gerador enviando e recenbendo tráfego..."
+              sleep "130"
+    
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
               arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$combined+algoritmo_$pasta_resultado+pkt_$tam_packet+ebpf_$modo_xdp+varIP_$var_ip+timeout_$timeout.txt"
-              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador "python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
 
               #prints
               echo "Experimento $cont/$((3*21*2*6)): ----------------------------------"
