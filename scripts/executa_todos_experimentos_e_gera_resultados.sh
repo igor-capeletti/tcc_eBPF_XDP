@@ -48,7 +48,7 @@ cont=1
 
 #vai iterar nos modos combined escolhidos
 #for it_combined in "2" "4" "8"; do
-for it_combined in "8"; do
+for it_combined in "4" "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
@@ -136,17 +136,6 @@ for it_combined in "8"; do
           for it_tam_packet in "64"; do 
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
-              #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
-              echo "Gerador enviando e recenbendo tráfego..."
-              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
-              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash /home/igorcapeletti/github/tcc_eBPF_XDP/gerador_trafego/setupNetGen.sh 128 xdpgeneric 0.0.0.10 8 60 pasta"
-
-              #sleep "130"
-    
-              #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
-              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
-              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
-
               #prints
               echo "Experimento $cont/$((3*21*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
@@ -161,6 +150,17 @@ for it_combined in "8"; do
               echo "    Seção de execução = $secao_programa_ebpf"
               ip link show $nome_interface    #visualizar informacao da interface de rede
               echo -e "\n"
+
+
+              #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
+              echo "Gerador enviando e recenbendo tráfego..."
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              
+              
+              #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
+              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
+              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+              
               cont=$((cont+1))
             done
           done
