@@ -14,7 +14,7 @@ arq_save="/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/$nome_pasta_resulta
 cd /opt/MoonGen
 
 #setup hugepages
-/opt/MoonGen/ ./setup-hugetlbfs.sh 
+./setup-hugetlbfs.sh 
 
 #load driver
 modprobe uio
