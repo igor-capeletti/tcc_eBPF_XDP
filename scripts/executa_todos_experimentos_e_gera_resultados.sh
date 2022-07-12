@@ -82,11 +82,13 @@ for it_combined in "1" "2" "4" "8"; do
       echo "Copiou novo programa para pasta de execucao do programa ebpf"
 
       #cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador mkdir $ssh_local_resultados/$pasta_resultado
+      #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
+      ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
       echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
 
       #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
-      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo
+      #echo $PASS | scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
       echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
 
@@ -164,13 +166,14 @@ for it_combined in "1" "2" "4" "8"; do
 
 
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
-              echo "Gerador enviando e recenbendo tráfego..."
+              #echo "Gerador enviando e recenbendo tráfego..."
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               
               
               #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
-              arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
-              #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
+              #arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
               
               cont=$((cont+1))
             done
