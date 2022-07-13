@@ -16,6 +16,10 @@ cd /opt/MoonGen
 #setup hugepages
 ./setup-hugetlbfs.sh 
 
+#
+python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:21:00.0
+rmmod igb_uio
+
 #load driver
 modprobe uio
 insmod /opt/MoonGen/libmoon/deps/dpdk/x86_64-native-linux-gcc/kmod/igb_uio.ko
