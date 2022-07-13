@@ -169,13 +169,14 @@ for it_combined in "2" "4"; do
               #echo "Gerador enviando e recenbendo tráfego..."
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               ssh -t $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado" &
-              echo $PASS | sudo sar -u ALL -P ALL -n DEV 2 -t 25 >> $ssh_local_resultados/stats_sar_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
-              #echo $PASS | sudo -S sar -u ALL -P ALL -n DEV 2 -t 5 > $ssh_local_resultados/"stats_sar_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
               
-              #echo $PASS | sudo -S perf stat -ddd sleep 5 > $ssh_local_resultados/"stats_perf_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
-              echo $PASS | sudo -S perf stat -ddd sleep 5 >> $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+              echo $PASS | sudo sar -u ALL -P ALL -n DEV 2 -t 25 >> stat_sar.txt
+              mv stat_sar.txt $ssh_local_resultados/stats_sar_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
 
-              sleep "40"
+              echo $PASS | sudo -S perf stat -ddd sleep 5 >> stat_perf.txt
+              mv stat_perf.txt $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+
+              sleep "20"
               
 
               cont=$((cont+1))
