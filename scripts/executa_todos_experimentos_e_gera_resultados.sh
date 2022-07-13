@@ -57,8 +57,8 @@ nome_interface="ens2np0"   #iface lab igor netronome
 cont=1
 
 #vai iterar nos modos combined escolhidos
-#for it_combined in "1"; do
-for it_combined in "1" "2" "4" "8"; do
+for it_combined in "2" "4"; do
+#for it_combined in "1" "2" "4" "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
@@ -150,7 +150,7 @@ for it_combined in "1" "2" "4" "8"; do
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
               #prints
-              echo "Experimento $cont/$((4*9*2*6)): ----------------------------------"
+              echo "Experimento $cont/$((2*9*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
@@ -168,8 +168,16 @@ for it_combined in "1" "2" "4" "8"; do
               #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
               #echo "Gerador enviando e recenbendo tráfego..."
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
-              ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              ssh -t $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado" &
+              echo $PASS | sudo sar -u ALL -P ALL -n DEV 2 -t 25 >> $ssh_local_resultados/stats_sar_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+              #echo $PASS | sudo -S sar -u ALL -P ALL -n DEV 2 -t 5 > $ssh_local_resultados/"stats_sar_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
               
+              #echo $PASS | sudo -S perf stat -ddd sleep 5 > $ssh_local_resultados/"stats_perf_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
+              echo $PASS | sudo -S perf stat -ddd sleep 5 >> $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+
+              sleep "40"
+              
+
               cont=$((cont+1))
             done
           done
