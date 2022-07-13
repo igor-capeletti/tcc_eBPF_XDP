@@ -170,11 +170,6 @@ for it_combined in "1" "2" "4" "8"; do
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               
-              
-              #coleta a media dos resultados obtidos e salva em um arquivo geral da pasta
-              #arq_save_resultado="$ssh_local_resultados/$pasta_resultado/res_combined_$it_combined+algoritmo_$pasta_resultado+pkt_$it_tam_packet+ebpf_$it_modo_xdp+varIP_$it_var_ip+timeout_$timeout_gerador.txt"
-              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S python3 $ssh_local_scripts_python/gera_csv_resultado.py --arquivo $arq_save_resultado"
-              
               cont=$((cont+1))
             done
           done
