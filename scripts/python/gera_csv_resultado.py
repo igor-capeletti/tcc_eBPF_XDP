@@ -1,120 +1,111 @@
 #Execucao:
 #python3 gera_csv_resultado.py --arquivo nome_arquivo
-import os
-import sys
-from datetime import datetime
 
-#importacao da biblioteca pandas, numpy, matplotlib, seaborn
+
+import os
+import platform
+import time
+import sys
+import glob
+from pathlib import Path
+
+#importacao das bibliotecas que necessitam instalacao
 try:
-  import argparse
   import pandas as pd
   import numpy as np
   import matplotlib.pyplot as plt
   import seaborn as sns
 
 except:
-  os.system('pip install argparse')
   os.system('pip install pandas')
   os.system('pip install numpy')
   os.system('pip install matplotlib')
   os.system('pip install seaborn')
 
+
+
 #variaveis globais -------------------------------------------
-endereco_file= ''
-cols= ['Time', 'TX Packets', 'Packet Rate Avg', 'Packet Rate', 'RX Packets','Packet Rate Avg.1','Packet Rate.1',
-       'Core', 'Port']
-cols_result= ['tx_packet/rx_packet', 'tx_rate/rx_rate', 'tx_rate_avg/rx_rate_avg']
+pasta_raiz= ""
+lista_arquivos= []
+lista_pastas= []
+
+#raiz= Path.home() / "/home/igorubuntu/Desktop/backup_res"
+#raiz= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados"
+raiz= Path.home() / "/home/igorcapeletti/github/tcc_eBPF_XDP/resultados"
+#print(raiz)
+
+for nomes_pastas in os.walk(raiz):
+  lista_pastas.append(nomes_pastas[0])
+
+lista_pastas= lista_pastas[1:]
+#print(lista_pastas)
+
+#normalizar os arquivos para formato csv -----------------
+for pasta in lista_pastas:
+  #print(f"\nPasta: {pasta}")
+  os.chdir(pasta)
+  for format_file in glob.glob('*.txt'):
+    nome_arquivo= (f'{pasta}/{format_file}').split('/')[7]
+    nome_arquivo= nome_arquivo.split('.txt')[0]
+    #print(nome_arquivo)
+
+    arquivo_txt= open(f'{pasta}/{format_file}', 'r')
+    arquivo_csv= open(f'{pasta}/{nome_arquivo}.csv', 'w')
+
+    i= 0
+    for linha in arquivo_txt:
+      if(i == 0):
+        titulo= linha.replace(' ','')
+        titulo= titulo.replace('Time','Time,')
+        titulo= titulo.replace('TXPackets','TXPackets,')
+        titulo= titulo.replace('TXPacketRateAvg','TXPacketRateAvg,')
+        titulo= titulo.replace('RateRXPackets','Rate,RXPackets,')
+        titulo= titulo.replace('RXPacketRateAvg','RXPacketRateAvg,')
+        titulo= titulo.replace('RateCore','Rate,Core,')
+        titulo= titulo.lower()
+        arquivo_csv.write(titulo)
+        #print(titulo)
+      else:
+        titulo= linha.replace(' ','')
+        arquivo_csv.write(titulo)
+      
+      i= i+1
+
+    arquivo_txt.close()
+    arquivo_csv.close()
 
 
-#tratamento de argumento -------------------------------------------
-parser = argparse.ArgumentParser()
-parser.add_argument("--arquivo", help="Define nome do arquivo para calcular o valor dos resultados.")
-args = parser.parse_args()
+#coletar os dados dos arquivos e salvar em um arquivo principal -----------------
+arq_resultado_geral= open(f'{raiz}/resultado_geral.csv', 'w')
+arq_resultado_geral.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate\n")
 
-try:    
-    if args.arquivo:
-        endereco_file = args.arquivo
-    else:
-        print("\nNao definido nome do arquivo para calcular o resultado! Ver comando --arquivo")
-        exit(-1)
-except:
-    print("Erro com parametros passados!")
-    exit(-1)
+for pasta in lista_pastas:
+  os.chdir(pasta)
+  for file in glob.glob('*.csv'):
+    df_novo = pd.read_csv(f'{pasta}/{file}', sep=',', engine='python')
+    #print(f'{pasta}/{file}')
+    #print(df_novo.head(1))
+    combined= file.split('combined_')[1]
+    combined= combined.split('+')[0]
+    algoritmo= file.split('algoritmo_')[1]
+    algoritmo= algoritmo.split('+')[0]
+    packet_size= file.split('pkt_')[1]
+    packet_size= packet_size.split('+')[0]
+    hook_ebpf= file.split('ebpf_')[1]
+    hook_ebpf= hook_ebpf.split('+')[0]
+    var_ip= file.split('varIP_')[1]
+    var_ip= var_ip.split('+')[0]
+    timeout= file.split('timeout_')[1]
+    timeout= timeout.split('.csv')[0]
 
+    df_novo= df_novo.tail(2)
+    df_novo.reset_index(drop=True, inplace=True)
+    rx_packets= df_novo.rxpackets[0]
+    rx_packet_rate_avg= df_novo.rxpacketrateavg[0]
+    rx_packet_rate= df_novo.rxpacketrate[0]
 
-#Carregamento do arquivo de resultados dos experimentos com o gerador de trafego:
-df= pd.read_fwf(endereco_file)
-df= df[cols]
+    arq_resultado_geral.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{rx_packets},{rx_packet_rate_avg},{rx_packet_rate}\n")
 
+arq_resultado_geral.close()
 
-#normalizacao do dataframe(transformado todas as colunas para sring, 
-# retirado as virgulas e depois transformado tipo de dados para float)
-for i in cols:
-  df[i]= df[i].astype(str)
-  df[i]= df[i].str.replace(',','')
-  df[i]= df[i].astype(float)
-
-
-#renomeacao das colunas do dataframe
-df.rename(columns = {'Time':'time', 'TX Packets':'tx_packets', 'Packet Rate Avg':'tx_packet_rate_avg','Packet Rate':'tx_packet_rate', 
-                      'RX Packets':'rx_packets','Packet Rate Avg.1':'rx_packet_rate_avg','Packet Rate.1':'rx_packet_rate',
-                      'Core':'core', 'Port':'port'}, inplace = True)
-
-
-#criando novo dataframe para os resultados das médias obtidas
-df_result= pd.DataFrame(np.zeros(shape=(30,3)), columns=cols_result)
-
-
-
-#calcular media para cada passo executado do teste
-i= 0
-j= 0
-while(i < int((len(df.index))/2)):
-  #calculo da relacao em cada passo de packets tx-rx
-  df_result['tx_packet/rx_packet'][j]= df.tx_packets[i]-df.rx_packets[i+1]
-  #print(f'{df.tx_packets[i]}-{df.rx_packets[i+1]}= {df_result["tx_packet/rx_packet"][j]}')
-
-  #calculo da relacao em cada passo da taxa de packets tx-rx
-  df_result['tx_rate/rx_rate'][j]= df.tx_packet_rate[i]-df.rx_packet_rate[i+1]
-  #print(f'{df.tx_packet_rate[i]}-{df.rx_packet_rate[i+1]}= {df_result["tx_rate/rx_rate"][j]}')
-
-  #calculo da relacao em cada passo da media da taxa de packets tx-rx
-  df_result['tx_rate_avg/rx_rate_avg'][j]= df.tx_packet_rate_avg[i]-df.rx_packet_rate_avg[i+1]
-  #print(f'{df.tx_packet_rate_avg[i]}-{df.rx_packet_rate_avg[i+1]}= {df_result["tx_rate_avg/rx_rate_avg"][j]}')
-  i+=2
-  j+=1
-
-
-#calcula a media geral de cada coluna do dataframe
-media_packets_tx_rx= df_result['tx_packet/rx_packet'].mean()
-media_rate_packets_tx_rx= df_result['tx_rate/rx_rate'].mean()
-media_avg_rate_packets_tx_rx= df_result['tx_rate_avg/rx_rate_avg'].mean()
-
-
-#salva essas medias calculadas acima, em um arquivo que contera o resultado de todos os testes
-local_end= endereco_file.split('/')
-end_pasta= f'{local_end[0]}/{local_end[1]}/{local_end[2]}/{local_end[3]}/{local_end[4]}/{local_end[5]}/{local_end[6]}'
-arq_resultados= open(f'{end_pasta}/resultado_final.txt', 'a')
-lista_variaveis= local_end[7].split('_')
-
-combined= lista_variaveis.split('combined_')[1]
-combined= combined.split('+')[0]
-algoritmo= lista_variaveis.split('algoritmo_')[1]
-algoritmo= algoritmo.split('+')[0]
-tam_packet= lista_variaveis.split('pkt_')[1]
-tam_packet= tam_packet.split('+')[0]
-ebpf= lista_variaveis.split('ebpf_')[1]
-ebpf= ebpf.split('+')[0]
-varIP= lista_variaveis.split('varIP_')[1]
-varIP= varIP.split('+')[0]
-timeout= lista_variaveis.split('timeout_')[1]
-timeout= timeout.split('.txt')[0]
-
-arq_resultados.write(f'{combined}\t{algoritmo}\t{tam_packet}\t{ebpf}\t{varIP}\t{timeout}\t{media_packets_tx_rx}\t{media_rate_packets_tx_rx}\t{media_avg_rate_packets_tx_rx}\n')
-arq_resultados.close()
-
-
-#print(df_result)
-#print(f'Media de pacotes tx-rx= \t\t{media_packets_tx_rx}')
-#print(f'Media de taxa pacotes tx-rx= \t\t{media_rate_packets_tx_rx}')
-#print(f'Media do AVG da taxa pacotes tx-rx= \t{media_avg_rate_packets_tx_rx}')
+print(f"Todos os resultados foram gerados para o arquivo:\n\t'{raiz}/resultado_geral.csv'\n")
