@@ -57,15 +57,19 @@ nome_interface="ens2np0"   #iface lab igor netronome
 cont=1
 
 #vai iterar nos modos combined escolhidos
-for it_combined in "2" "4"; do
-#for it_combined in "1" "2" "4" "8"; do
+for it_combined in "1" "2" "4" "8"; do
   echo -e "\n\n"
   echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
   if [ $tipo_programa_ebpf = "for" ]; then
-    #for it_experimento in "0"; do
-    #for it_experimento in {0..10000..500}; do
     for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
+      #maquina gerador de trafego ira reiniciar via comando por ssh 
+      #a cada 36 execucoes para nao bugar o gerador
+      if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
+        ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+        sleep "120"
+      fi
+      
       nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
       pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
 
@@ -145,12 +149,12 @@ for it_combined in "2" "4"; do
           fi
 
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
-          #for it_tam_packet in "64"; do
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
             #vai fazer o experimento para cada variacao de IPs
             for it_var_ip in "0.0.0.255"; do
               #prints
-              echo "Experimento $cont/$((2*9*2*6)): ----------------------------------"
+              echo -e "\n\n\n"
+              echo "Experimento $cont/$((4*9*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
