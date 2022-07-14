@@ -30,8 +30,9 @@ df_pergunta1= df_pergunta1[['algoritmo','packet_size','rx_packets','rx_packet_ra
 
 ax = sns.barplot(y="rx_packets", x='algoritmo', hue='packet_size', data=df_pergunta1, palette='Paired');
 ax.set_title(f'Quantidade de pacotes processados de acordo com o Algoritmo e tamanho de pacotes, com Hook {hook_ebpf} e {combined} fila tx/rx', fontsize=18, pad=50);
-ax.set_ylabel('Número de pacotes')
-ax.set_xlabel('Tamanho dos pacotes')
+ax.set_ylabel('Quantidade de pacotes')
+ax.set_xlabel('Tamanhos do algoritmo for')
+ax.legend(title = "Tamanho dos pacotes")
 
 save_image= ax.get_figure()
 save_image.savefig(f'{raiz}/pergunta1.png')
