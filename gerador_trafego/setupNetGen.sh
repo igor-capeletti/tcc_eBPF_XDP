@@ -19,15 +19,17 @@ cd /opt/MoonGen
 #
 python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:21:00.0
 rmmod igb_uio
+rmmod vfio-pci
 
 #load driver
 modprobe uio
 insmod /opt/MoonGen/libmoon/deps/dpdk/x86_64-native-linux-gcc/kmod/igb_uio.ko
+modprobe vfio-pci
 
 #attach driver to network interfaface
 python libmoon/deps/dpdk/usertools/dpdk-devbind.py -u 0000:23:00.1
 
-python libmoon/deps/dpdk/usertools/dpdk-devbind.py --bind=igb_uio 0000:21:00.0
+python libmoon/deps/dpdk/usertools/dpdk-devbind.py --bind=vfio-pci 0000:21:00.0
 
 python libmoon/deps/dpdk/usertools/dpdk-devbind.py --status
 
