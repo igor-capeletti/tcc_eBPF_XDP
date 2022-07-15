@@ -458,7 +458,7 @@ function statsRx:write(filename, portId)
     local time = mg.getTime() - globalStartTime
 
     local statsString = string.format(
-        "%6.3f,%13u,%18.2f,%18.2f,%13u,%18.2f,%18.2f,%5u,%5u\n", 
+        "%6.3f,%13u,%18.2f,%18.2f,%13u,%18.2f,%18.2f,%18.2f,%5u,%5u\n", 
         time                                                ,
         0                                                   ,
         0                                                   ,
@@ -466,7 +466,8 @@ function statsRx:write(filename, portId)
         self.packets                                        ,
         (self.packets - self.prevPackets) / self.deltaTime  ,
         self.packets / self.elapsedTime                     ,
-        mg:getCore()                                   ,
+        self.meanLatency                                    ,
+        mg:getCore()                                    ,
         portId                                              
     ) 
 
@@ -811,15 +812,16 @@ function writeStatsHeader(filename)
     file = io.open(filename, "a")
 
     local headerString = string.format(
-        "%6s %13s %18s %18s %13s %18s %18s %5s %5s\n",
-        "Time", 
-        "TX Packets",
-        "TX Packet Rate"    ,
-        "Avg TX Packet Rate",
-        "RX Packets"        ,
-        "RX Packet Rate"    ,
-        "Avg RX Packet Rate",
-        "Core"              ,
+        "%6s %13s %18s %18s %13s %18s %18s %18s %5s %5s\n",
+        "Time,", 
+        "TX Packets,",
+        "TX Packet Rate,"    ,
+        "Avg TX Packet Rate,",
+        "RX Packets,"        ,
+        "RX Packet Rate,"    ,
+        "Avg RX Packet Rate,",
+        "Latency mean,",
+        "Core,"              ,
         "Port"    
     )
 

@@ -1,5 +1,5 @@
 #Execucao:
-#python3 gera_csv_resultado.py --arquivo nome_arquivo
+#python3 gera_csv_resultado.py
 
 
 import os
@@ -29,23 +29,32 @@ pasta_raiz= ""
 lista_arquivos= []
 lista_pastas= []
 
-#raiz= Path.home() / "/home/igorubuntu/Desktop/backup_res"
-#raiz= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados"
-raiz= Path.home() / "/home/igorcapeletti/github/tcc_eBPF_XDP/resultados"
-#print(raiz)
+
+#end_local_res_gerador= Path.home() / "/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/gerador"
+end_local_res_gerador= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/gerador"
+
+#end_local_res_perf= Path.home() / "/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/perf"
+end_local_res_perf= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/perf"
+
+#end_local_res_sar= Path.home() / "/home/igorcapeletti/github/tcc_eBPF_XDP/resultados/sar"
+end_local_res_sar= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/sar"
+
+
+
+#1) analiza arquivos salvos pelo gerador de trafego ----------------------------------------------------------
+raiz= end_local_res_gerador
 
 for nomes_pastas in os.walk(raiz):
   lista_pastas.append(nomes_pastas[0])
 
 lista_pastas= lista_pastas[1:]
-#print(lista_pastas)
 
 #normalizar os arquivos para formato csv -----------------
 for pasta in lista_pastas:
   #print(f"\nPasta: {pasta}")
   os.chdir(pasta)
   for format_file in glob.glob('*.txt'):
-    nome_arquivo= (f'{pasta}/{format_file}').split('/')[7]
+    nome_arquivo= (f'{pasta}/{format_file}').split('/')[8]
     nome_arquivo= nome_arquivo.split('.txt')[0]
     #print(nome_arquivo)
 
@@ -76,7 +85,7 @@ for pasta in lista_pastas:
 
 
 #coletar os dados dos arquivos e salvar em um arquivo principal -----------------
-arq_resultado_geral= open(f'{raiz}/resultado_geral.csv', 'w')
+arq_resultado_geral= open(f'{raiz}/resultado_geral_gerador.csv', 'w')
 arq_resultado_geral.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate\n")
 
 for pasta in lista_pastas:
@@ -107,5 +116,24 @@ for pasta in lista_pastas:
     arq_resultado_geral.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{rx_packets},{rx_packet_rate_avg},{rx_packet_rate}\n")
 
 arq_resultado_geral.close()
+print(f"Todos os resultados do gerador foram salvos no arquivo:\n\t'{raiz}/resultado_geral_gerador.csv'\n")
 
-print(f"Todos os resultados foram gerados para o arquivo:\n\t'{raiz}/resultado_geral.csv'\n")
+
+#2) analiza arquivos salvos pelo perf na maquina de execucao dos programas eBPF/XDP ------------------------
+pasta= "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/perf"
+os.chdir(pasta)
+for format_file in glob.glob('*.txt'):
+  arquivo_txt= open(f'{pasta}/{format_file}', 'r')
+  i= 0
+  for linha in arquivo_txt:
+    if(i >= 5 and i <= 13):
+      dados_linha= linha.replace(' ','')
+      print(dados_linha)
+    i= i+1
+  arquivo_txt.close()
+#  arquivo_csv.close()
+#
+##coletar os dados dos arquivos e salvar em um arquivo principal -----------------
+#arq_resultado_geral= open(f'{raiz}/resultado_geral_perf.csv', 'w')
+#arq_resultado_geral.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate\n")
+
