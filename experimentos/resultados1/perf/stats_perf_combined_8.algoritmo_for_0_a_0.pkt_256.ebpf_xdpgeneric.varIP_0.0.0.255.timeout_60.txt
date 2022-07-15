@@ -1,0 +1,36 @@
+# started on Thu Jul 14 23:42:49 2022
+
+
+ Performance counter stats for 'sleep 5':
+
+              0,90 msec task-clock                #    0,000 CPUs utilized          
+                 1      context-switches          #    1,107 K/sec                  
+                 0      cpu-migrations            #    0,000 /sec                   
+                65      page-faults               #   71,945 K/sec                  
+         2.224.635      cycles                    #    2,462 GHz                    
+         1.035.778      instructions              #    0,47  insn per cycle         
+           210.697      branches                  #  233,210 M/sec                  
+             7.925      branch-misses             #    3,76% of all branches        
+           276.453      L1-dcache-loads           #  305,992 M/sec                  
+     <not counted>      L1-dcache-load-misses                                         (0,00%)
+     <not counted>      LLC-loads                                                     (0,00%)
+     <not counted>      LLC-load-misses                                               (0,00%)
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0,00%)
+     <not counted>      dTLB-loads                                                    (0,00%)
+     <not counted>      dTLB-load-misses                                              (0,00%)
+     <not counted>      iTLB-loads                                                    (0,00%)
+     <not counted>      iTLB-load-misses                                              (0,00%)
+   <not supported>      L1-dcache-prefetches                                        
+   <not supported>      L1-dcache-prefetch-misses                                   
+
+       5,001932947 seconds time elapsed
+
+       0,002188000 seconds user
+       0,000000000 seconds sys
+
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
