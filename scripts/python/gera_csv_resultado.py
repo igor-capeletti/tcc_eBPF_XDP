@@ -140,38 +140,37 @@ for file in glob.glob('*.txt'):
     dados_linha= linha.replace(' ','')
     if(i == 5):
       task_clock= dados_linha.split("msectask-clock")[0]
-    if(i == 6):
+    elif(i == 6):
       context_switches= dados_linha.split("context-switches")[0]
-    if(i == 7):
+    elif(i == 7):
       cpu_migrations= dados_linha.split("cpu-migrations")[0]
-    if(i == 8):
+    elif(i == 8):
       page_faults= dados_linha.split("page-faults")[0]
-    if(i == 9):
+    elif(i == 9):
       cycles= dados_linha.split("cycles")[0]
-    if(i == 10):
+    elif(i == 10):
       instructions= dados_linha.split("instructions")[0]
-    if(i == 11):
+    elif(i == 11):
       branches= dados_linha.split("branches")[0]
-    if(i == 12):
+    elif(i == 12):
       branch_misses= dados_linha.split("branch-misses")[0]
-    if(i == 13):
+    elif(i == 13):
       L1_dcache_loads= dados_linha.split("L1-dcache-loads")[0]
-    if(i == 14):
+    elif(i == 14):
       L1_dcache_load_misses= dados_linha.split("L1-dcache-load-misses")[0]
-    if(i == 15):
+    elif(i == 15):
       LLC_loads= dados_linha.split("LLC-loads")[0]
-    if(i == 16):
+    elif(i == 16):
       LLC_load_misses= dados_linha.split("LLC-load-misses")[0]
-
-    if(i == 18):
+    elif(i == 18):
       L1_icache_load_misses= dados_linha.split("L1-icache-load-misses")[0]
-    if(i == 19):
+    elif(i == 19):
       dTLB_loads= dados_linha.split("dTLB-loads")[0]
-    if(i == 20):
+    elif(i == 20):
       dTLB_load_misses= dados_linha.split("dTLB-load-misses")[0]
-    if(i == 21):
+    elif(i == 21):
       iTLB_loads= dados_linha.split("iTLB-loads")[0]
-    if(i == 22):
+    elif(i == 22):
       iTLB_load_misses= dados_linha.split("iTLB-load-misses")[0]
 
     i= i+1
@@ -182,3 +181,51 @@ print(f"Todos os resultados do perf foram salvos no arquivo:\n\t'{local_res_exer
 
 
 #3) analiza arquivos salvos pelo sar na maquina de execucao dos programas eBPF/XDP ------------------------
+pasta= f"{local_res_exerimentos}/{nome_pasta_resultados}/sar"
+arq_resultado_geral_sar= open(f'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_sar.csv', 'w')
+arq_resultado_geral_sar.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,cpu,usr,nice,sys,iowait,steal,irq,soft,guest,gnice,idle\n")
+
+
+os.chdir(pasta)
+for file in glob.glob('*.txt'):
+  arquivo_txt= open(f'{pasta}/{file}', 'r')
+  
+  combined= file.split('combined_')[1]
+  combined= combined.split('.')[0]
+  algoritmo= file.split('algoritmo_')[1]
+  algoritmo= algoritmo.split('.')[0]
+  packet_size= file.split('pkt_')[1]
+  packet_size= packet_size.split('.')[0]
+  hook_ebpf= file.split('ebpf_')[1]
+  hook_ebpf= hook_ebpf.split('.')[0]
+  var_ip= file.split('varIP_')[1]
+  var_ip= var_ip.split('.')
+  var_ip= f"{var_ip[0]}.{var_ip[1]}.{var_ip[2]}.{var_ip[3]}"
+  timeout= file.split('timeout_')[1]
+  timeout= timeout.split('.txt')[0]
+
+  num_l= 0
+  num_cpus= 16
+  inicio_linha= 652
+  for linha in arquivo_txt:
+    if(num_l >= 652 and num_l < (inicio_linha+16)):
+      dados_linha= linha.replace(',','.')
+      dados_linha= dados_linha.split(' ')
+      dados_linha= list(filter(None, dados_linha))
+      cpu= dados_linha[1]
+      usr= dados_linha[2]
+      nice= dados_linha[3]
+      sys= dados_linha[4]
+      iowait= dados_linha[5]
+      steal= dados_linha[6]
+      irq= dados_linha[7]
+      soft= dados_linha[8]
+      guest= dados_linha[9]
+      gnice= dados_linha[10]
+      idle= dados_linha[11].split('\n')[0]
+      arq_resultado_geral_sar.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{cpu},{usr},{nice},{sys},{iowait},{steal},{irq},{soft},{guest},{gnice},{idle}\n")
+    
+    num_l= num_l+1
+  arquivo_txt.close()
+arq_resultado_geral_sar.close()
+print(f"Todos os resultados do perf foram salvos no arquivo:\n\t'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_sar.csv'\n")
