@@ -29,8 +29,14 @@ pasta_raiz= ""
 lista_arquivos= []
 lista_pastas= []
 
+usuario= "igorubuntu"
+#usuario= "igorcapeletti"
+
+local_res_exerimentos= f"/home/{usuario}/github/tcc_eBPF_XDP/experimentos"
+nome_pasta_resultados= "resultados1"
+
 #1) analiza arquivos salvos pelo gerador de trafego ----------------------------------------------------------
-raiz= Path.home() / "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/gerador"
+raiz= Path.home() / f"{local_res_exerimentos}/{nome_pasta_resultados}/gerador"
 
 for nomes_pastas in os.walk(raiz):
   lista_pastas.append(nomes_pastas[0])
@@ -42,7 +48,7 @@ for pasta in lista_pastas:
   #print(f"\nPasta: {pasta}")
   os.chdir(pasta)
   for format_file in glob.glob('*.txt'):
-    nome_arquivo= (f'{pasta}/{format_file}').split('/')[8]
+    nome_arquivo= (f'{pasta}/{format_file}').split('/')[9]
     nome_arquivo= nome_arquivo.split('.txt')[0]
     #print(nome_arquivo)
 
@@ -73,7 +79,7 @@ for pasta in lista_pastas:
 
 
 #coletar os dados dos arquivos e salvar em um arquivo principal -----------------
-arq_resultado_geral_gerador= open(f'{raiz}/resultado_geral_gerador.csv', 'w')
+arq_resultado_geral_gerador= open(f'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_gerador.csv', 'w')
 arq_resultado_geral_gerador.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate\n")
 
 for pasta in lista_pastas:
@@ -103,17 +109,32 @@ for pasta in lista_pastas:
 
     arq_resultado_geral_gerador.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{rx_packets},{rx_packet_rate_avg},{rx_packet_rate}\n")
 arq_resultado_geral_gerador.close()
-print(f"Todos os resultados do gerador foram salvos no arquivo:\n\t'{raiz}/resultado_geral_gerador.csv'\n")
+print(f"Todos os resultados do gerador foram salvos no arquivo:\n\t'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_gerador.csv'\n")
 
 
 #2) analiza arquivos salvos pelo perf na maquina de execucao dos programas eBPF/XDP ------------------------
-pasta= "/home/igorubuntu/github/tcc_eBPF_XDP/resultados/perf"
-arq_resultado_geral_perf= open(f'{pasta}/resultado_geral_perf.csv', 'w')
-arq_resultado_geral_perf.write("task_clock,context_switches,cpu_migrations,page_faults,cycles,instructions,branches,branch_misses,L1_dcache_loads,L1_dcache_load_misses,LLC_loads,LLC_load_misses,L1_icache_load_misses,dTLB_loads,dTLB_load_misses,iTLB_loads,iTLB_load_misses\n")
+pasta= f"{local_res_exerimentos}/{nome_pasta_resultados}/perf"
+arq_resultado_geral_perf= open(f'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_perf.csv', 'w')
+arq_resultado_geral_perf.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,task_clock,context_switches,cpu_migrations,page_faults,cycles,instructions,branches,branch_misses,L1_dcache_loads,L1_dcache_load_misses,LLC_loads,LLC_load_misses,L1_icache_load_misses,dTLB_loads,dTLB_load_misses,iTLB_loads,iTLB_load_misses\n")
 
 os.chdir(pasta)
-for format_file in glob.glob('*.txt'):
-  arquivo_txt= open(f'{pasta}/{format_file}', 'r')
+for file in glob.glob('*.txt'):
+  arquivo_txt= open(f'{pasta}/{file}', 'r')
+  
+  combined= file.split('combined_')[1]
+  combined= combined.split('.')[0]
+  algoritmo= file.split('algoritmo_')[1]
+  algoritmo= algoritmo.split('.')[0]
+  packet_size= file.split('pkt_')[1]
+  packet_size= packet_size.split('.')[0]
+  hook_ebpf= file.split('ebpf_')[1]
+  hook_ebpf= hook_ebpf.split('.')[0]
+  var_ip= file.split('varIP_')[1]
+  var_ip= var_ip.split('.')
+  var_ip= f"{var_ip[0]}.{var_ip[1]}.{var_ip[2]}.{var_ip[3]}"
+  timeout= file.split('timeout_')[1]
+  timeout= timeout.split('.txt')[0]
+
   i= 0
   for linha in arquivo_txt:
     dados_linha= linha.replace(' ','')
@@ -155,9 +176,9 @@ for format_file in glob.glob('*.txt'):
 
     i= i+1
   arquivo_txt.close()
-  arq_resultado_geral_perf.write(f"{task_clock},{context_switches},{cpu_migrations},{page_faults},{cycles},{instructions},{branches},{branch_misses},{L1_dcache_loads},{L1_dcache_load_misses},{LLC_loads},{LLC_load_misses},{L1_icache_load_misses},{dTLB_loads},{dTLB_load_misses},{iTLB_loads},{iTLB_load_misses}\n")
+  arq_resultado_geral_perf.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{task_clock},{context_switches},{cpu_migrations},{page_faults},{cycles},{instructions},{branches},{branch_misses},{L1_dcache_loads},{L1_dcache_load_misses},{LLC_loads},{LLC_load_misses},{L1_icache_load_misses},{dTLB_loads},{dTLB_load_misses},{iTLB_loads},{iTLB_load_misses}\n")
 arq_resultado_geral_perf.close()
-print(f"Todos os resultados do perf foram salvos no arquivo:\n\t'{pasta}/resultado_geral_perf.csv'\n")
+print(f"Todos os resultados do perf foram salvos no arquivo:\n\t'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_perf.csv'\n")
 
 
 #3) analiza arquivos salvos pelo sar na maquina de execucao dos programas eBPF/XDP ------------------------
