@@ -15,8 +15,8 @@
 usuario="igorcapeletti"
 tipo_programa_ebpf="for"
 secao_programa_ebpf="xdp_pass"
-modo_execucao_programa_ebpf="normal"
-#modo_execucao_programa_ebpf="af_xdp"
+#modo_execucao_programa_ebpf="normal"
+modo_execucao_programa_ebpf="af_xdp"
 local_scripts_shell="/home/$usuario/github/tcc_eBPF_XDP/scripts/shell_script"
 local_scripts_ebpf="/home/$usuario/github/tcc_eBPF_XDP/scripts/ebpf"
 local_scripts_python="/home/$usuario/github/tcc_eBPF_XDP/scripts/python"
@@ -56,48 +56,50 @@ nome_interface="ens2np0"   #iface lab igor netronome
 
 cont=1
 
-#vai iterar nos modos combined escolhidos
-for it_combined in "1" "2" "4" "8"; do
-  echo -e "\n\n"
-  echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
+#modo exec eBPF normal ou AF_XDP
+if [ $modo_execucao_programa_ebpf = "normal" ]; then
+  programa_bpf="basic02-prog-by-name"
+  #vai iterar nos modos combined escolhidos
+  for it_combined in "1" "2" "4" "8"; do
+    echo -e "\n\n"
+    echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
-  if [ $tipo_programa_ebpf = "for" ]; then
-    for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
-      #maquina gerador de trafego ira reiniciar via comando por ssh 
-      #a cada 36 execucoes para nao bugar o gerador
-      if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
-        ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-        sleep "120"
-      fi
-      
-      nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
-      pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
+    if [ $tipo_programa_ebpf = "for" ]; then
+      for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
+        #maquina gerador de trafego ira reiniciar via comando por ssh 
+        #a cada 36 execucoes para nao bugar o gerador
+        if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
+          ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+          sleep "120"
+        fi
 
-      #gera programa ebpf escolhido
-      python3 /home/$usuario/github/tcc_eBPF_XDP/scripts/python/gerador_programas_ebpf.py --instrucao $tipo_programa_ebpf --inicio $cont_inicial --fim $it_experimento
-      echo "Gerou novo programa ebpf $nome_arq_algoritmo"
+        nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
+        pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
 
-      #deleta programa ebpf atual da pasta de execucao
-      rm -r /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
-      echo "Removeu programa ebpf atual"
+        #gera programa ebpf escolhido
+        python3 /home/$usuario/github/tcc_eBPF_XDP/scripts/python/gerador_programas_ebpf.py --instrucao $tipo_programa_ebpf --inicio $cont_inicial --fim $it_experimento
+        echo "Gerou novo programa ebpf $nome_arq_algoritmo"
 
-      #substitui o programa ebpf atual por um novo que sera executado
-      cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
-      echo "Copiou novo programa para pasta de execucao do programa ebpf"
+        #deleta programa ebpf atual da pasta de execucao
+        rm -r /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
+        echo "Removeu programa ebpf atual"
 
-      #cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
-      #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
-      ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
-      echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
+        #substitui o programa ebpf atual por um novo que sera executado
+        cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c
+        echo "Copiou novo programa para pasta de execucao do programa ebpf"
 
-      #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
-      #echo $PASS | scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
-      scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
-      echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
+        #cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
+        #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
+        ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
+        echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
+
+        #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
+        #echo $PASS | scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+        scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+        echo "Copiou novo programa ebpf para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
 
-      #modo exec eBPF normal ou AF_XDP
-      if [ $modo_execucao_programa_ebpf = "normal" ]; then
+
         #for it_modo_xdp in "xdpgeneric" "xdpdrv" "xdpoffload"; do
         for it_modo_xdp in "xdpgeneric" "xdpdrv"; do
           #desabilita todos os programas xdp das interfaces de rede
@@ -187,7 +189,128 @@ for it_combined in "1" "2" "4" "8"; do
             done
           done
         done
-      fi
-    done
-  fi
-done
+      done
+    fi
+  done
+elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
+  programa_bpf="advanced03-AF_XDP"
+  #vai iterar nos modos combined escolhidos
+  for it_combined in "1" "2" "4" "8"; do
+    echo -e "\n\n"
+    echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
+
+    if [ $tipo_programa_ebpf = "for" ]; then
+      for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
+        #maquina gerador de trafego ira reiniciar via comando por ssh 
+        #a cada 36 execucoes para nao bugar o gerador
+        if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
+          ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+          sleep "120"
+        fi
+
+        nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
+        pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
+
+        #gera programa af_xdp escolhido
+        python3 /home/$usuario/github/tcc_eBPF_XDP/scripts/python/gerador_programas_ebpf_af_xdp.py --instrucao $tipo_programa_ebpf --inicio $cont_inicial --fim $it_experimento
+        echo "Gerou novo programa AF_XDP $nome_arq_algoritmo"
+
+
+        #deleta programa af_xdp atual da pasta de execucao
+        echo $PASS | sudo -S rm -r /home/$usuario/libbpf/xdp-tutorial/advanced03-AF_XDP/af_xdp_user.c
+        echo "Removeu programa AF_XDP atual"
+
+        #substitui o programa af_xdp atual por um novo que sera executado
+        echo $PASS | sudo -S cp $local_scripts_ebpf/$nome_arq_algoritmo /home/$usuario/libbpf/xdp-tutorial/advanced03-AF_XDP/af_xdp_user.c
+        echo "Copiou novo programa para pasta de execucao do programa AF_XDP"
+
+        #cria pasta de cada algoritmo na maquina de geracao de pacotes para depois armazenar os resultados de cada experimento
+        #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
+        ssh $ssh_usuario_gerador@$ssh_ip_gerador "mkdir $ssh_local_resultados/$pasta_resultado"
+        echo "Criou nova pasta($pasta_resultado) de resultado na maquina geradora de trafego"
+
+        #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
+        #echo $PASS | scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+        echo $PASS | sudo -S scp /home/$usuario/libbpf/xdp-tutorial/advanced03-AF_XDP/af_xdp_user.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+        echo "Copiou novo programa af_xdp para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
+
+        for it_modo_xdp in "xdpgeneric"; do
+          #desabilita todos os programas xdp das interfaces de rede
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpgeneric off
+          #ip link set dev ens2np1 xdpgeneric off
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpdrv off
+          #ip link set dev ens2np1 xdpdrv off
+          echo $PASS | sudo -S ip link set dev $nome_interface xdpoffload off
+          #ip link set dev ens2np1 xdpoffload off
+
+          #derruba interfaces de rede
+          echo $PASS | sudo -S ip link set dev $nome_interface down
+          #ip link set dev ens2np1 down
+
+          #configuracao das interfaces de rede
+          if [ $tipo_rede = "single" ]; then
+            #ativa links das interfaces
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            #seta ip para interface
+            #ifconfig ens2np0 $endsubredeI up
+            echo $PASS | sudo -S ip addr add $endsubredeI dev $nome_interface
+            #route add default gw 10.10.10.10 ens2np0
+          elif [ $tipo_rede = "dual" ]; then
+            #ativa links das interfaces de rede
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            echo $PASS | sudo -S ip link set dev $nome_interface up
+            #seta ip para cada interface
+            #ifconfig ens2np0 $endsubredeI up
+            echo $PASS | sudo -S ip addr add $endsubredeI dev $nome_interface
+            #ifconfig ens2np1 $endsubredeO up
+            echo $PASS | sudo -S ip addr add $endsubredeO dev $nome_interface
+          fi
+
+          cd /home/$usuario/libbpf/xdp-tutorial/$programa_bpf
+          echo $PASS | sudo -S make
+
+          #vai gerar trafego para cada um dos tamanhos de pacotes especificados
+          for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
+            #vai fazer o experimento para cada variacao de IPs
+            for it_var_ip in "0.0.0.255"; do
+              #prints
+              echo -e "\n\n\n"
+              echo "Experimento $cont/$((4*9*6)): ----------------------------------"
+              echo "  Combined =  $it_combined"
+              echo "  Algoritmo = $nome_arq_algoritmo"
+              echo "  Modo Hook XDP = $it_modo_xdp"
+              echo "  Tamanho dos pacotes gerados = $it_tam_packet"
+              echo "  Variacao de enderecos IP = $it_var_ip"
+              echo "  Outras informacoes: ---------"
+              echo "    Execucao do programa eBPF em modo = $modo_execucao_programa_ebpf"
+              echo "    Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
+              echo "    Forma de execução = $tipo_exec_prog"
+              echo "    Seção de execução = $secao_programa_ebpf"
+              echo -e "\n"
+
+
+              #faz acesso ssh com maquina geradora de trafego e chama shell script que ativa o gerador para gerar trafego
+              #echo "Gerador enviando e recenbendo tráfego..."
+              #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
+              ssh -t $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado" &
+
+              echo $PASS | sudo -S ./af_xdp_user --dev $nome_interface --filename af_xdp_kern.o --force --progsec xdp_sock --skb-mode &
+              PID=$!
+
+              echo $PASS | sudo sar -u ALL -P ALL -n DEV 2 -t 25 >> stats_sar.txt
+              mv stats_sar.txt $ssh_local_resultados/stats_sar_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+
+              echo $PASS | sudo perf stat -ddd -o stats_perf.txt sleep 5
+              mv stats_perf.txt $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
+
+              sleep "20"
+              kill -INT $PID
+              
+              cont=$((cont+1))
+            done
+          done
+        done
+      done
+    fi
+  done
+fi
