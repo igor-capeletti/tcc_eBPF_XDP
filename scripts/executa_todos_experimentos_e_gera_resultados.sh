@@ -204,8 +204,8 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
         #maquina gerador de trafego ira reiniciar via comando por ssh 
         #a cada 36 execucoes para nao bugar o gerador
         if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
-          ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-          sleep "120"
+          #ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+          sleep "1"
         fi
 
         nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
@@ -269,6 +269,9 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
           cd /home/$usuario/libbpf/xdp-tutorial/$programa_bpf
           echo $PASS | sudo -S make
 
+          echo $PASS | sudo -S ./af_xdp_user --dev $nome_interface --filename af_xdp_kern.o --force --progsec xdp_sock --skb-mode &
+          PID=$!
+
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
             #vai fazer o experimento para cada variacao de IPs
@@ -286,6 +289,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
               echo "    Rede com $tipo_rede channel na placa (single= 1 interface, dual= 2 interfaces)"
               echo "    Forma de execução = $tipo_exec_prog"
               echo "    Seção de execução = $secao_programa_ebpf"
+              ip link show $nome_interface    #visualizar informacao da interface de rede
               echo -e "\n"
 
 
@@ -293,10 +297,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
               #echo "Gerador enviando e recenbendo tráfego..."
               #echo $PASS | ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado"
               ssh -t $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S bash $ssh_local_gerador/setupNetGen.sh $it_tam_packet $it_modo_xdp $it_var_ip $it_combined $timeout_gerador $pasta_resultado" &
-
-              echo $PASS | sudo -S ./af_xdp_user --dev $nome_interface --filename af_xdp_kern.o --force --progsec xdp_sock --skb-mode &
-              PID=$!
-
+             
               echo $PASS | sudo sar -u ALL -P ALL -n DEV 2 -t 25 >> stats_sar.txt
               mv stats_sar.txt $ssh_local_resultados/stats_sar_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
 
@@ -304,11 +305,10 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
               mv stats_perf.txt $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
 
               sleep "20"
-              kill -INT $PID
-              
               cont=$((cont+1))
             done
           done
+          echo $PASS | sudo -S kill -INT $PID
         done
       done
     fi
