@@ -68,7 +68,6 @@ for pasta in lista_pastas:
         titulo= titulo.replace('RXPacketRateAvg','RXPacketRateAvg,')
         titulo= titulo.replace('RateCore','Rate,Core,')
         titulo= titulo.replace('RXPacketRateLatencymeanCorePort','RXPacketRate,Latencymean,Core,Port')
-        print(titulo)
         titulo= titulo.lower()
         arquivo_csv.write(titulo)
         #print(titulo)
