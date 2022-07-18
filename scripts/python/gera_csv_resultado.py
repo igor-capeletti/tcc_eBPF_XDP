@@ -33,7 +33,8 @@ usuario= "igorubuntu"
 #usuario= "igorcapeletti"
 
 local_res_exerimentos= f"/home/{usuario}/github/tcc_eBPF_XDP/experimentos"
-nome_pasta_resultados= "resultados1"
+#nome_pasta_resultados= "resultados1"
+nome_pasta_resultados= "resultados2"
 
 #1) analiza arquivos salvos pelo gerador de trafego ----------------------------------------------------------
 raiz= Path.home() / f"{local_res_exerimentos}/{nome_pasta_resultados}/gerador"
@@ -58,6 +59,7 @@ for pasta in lista_pastas:
     i= 0
     for linha in arquivo_txt:
       if(i == 0):
+        
         titulo= linha.replace(' ','')
         titulo= titulo.replace('Time','Time,')
         titulo= titulo.replace('TXPackets','TXPackets,')
@@ -65,6 +67,7 @@ for pasta in lista_pastas:
         titulo= titulo.replace('RateRXPackets','Rate,RXPackets,')
         titulo= titulo.replace('RXPacketRateAvg','RXPacketRateAvg,')
         titulo= titulo.replace('RateCore','Rate,Core,')
+        titulo= titulo.replace('RXPacketRateLatencymeanCorePort','RXPacketRate,Latencymean,Core,Port')
         titulo= titulo.lower()
         arquivo_csv.write(titulo)
         #print(titulo)
