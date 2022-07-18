@@ -231,7 +231,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
 
         #envia para maquina dos resultados o programa ebpf que foi executado no teste desta maquina
         #echo $PASS | scp /home/$usuario/libbpf/xdp-tutorial/basic02-prog-by-name/xdp_prog_kern.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
-        echo $PASS | sudo -S scp /home/$usuario/libbpf/xdp-tutorial/advanced03-AF_XDP/af_xdp_user.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
+        scp /home/$usuario/libbpf/xdp-tutorial/advanced03-AF_XDP/af_xdp_user.c $ssh_usuario_gerador@$ssh_ip_gerador:$ssh_local_resultados/$pasta_resultado/$nome_arq_algoritmo 
         echo "Copiou novo programa af_xdp para a pasta resultados/$pasta_resultado da maquina geradora de trafego"
 
         for it_modo_xdp in "xdpgeneric"; do
