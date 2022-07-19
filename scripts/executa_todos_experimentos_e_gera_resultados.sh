@@ -205,7 +205,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
         #a cada 36 execucoes para nao bugar o gerador
         if [[ $it_experimento == "0" || $it_experimento == "3200" ]]; then
           ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-          sleep "150"
+          sleep "140"
         fi
 
         nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
@@ -270,7 +270,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
           echo $PASS | sudo -S make
 
           echo $PASS | sudo -S ./af_xdp_user --dev $nome_interface --filename af_xdp_kern.o --force --progsec xdp_sock --skb-mode &
-          PID=$!
+          sleep "5"
 
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
@@ -304,7 +304,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
               echo $PASS | sudo perf stat -ddd -o stats_perf.txt sleep 5
               mv stats_perf.txt $ssh_local_resultados/stats_perf_combined_$it_combined.algoritmo_$pasta_resultado.pkt_$it_tam_packet.ebpf_$it_modo_xdp.varIP_$it_var_ip.timeout_$timeout_gerador.txt
 
-              sleep "20"
+              sleep "30"
               cont=$((cont+1))
             done
           done
