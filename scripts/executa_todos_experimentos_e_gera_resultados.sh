@@ -6,8 +6,7 @@
 #rmmod nfp
 #modprobe nfp
 #ethtool -L ens2np0 combined 8
-#cd /home/igorcapeletti/github/nfp-drv-kmods/tools
-#bash set_irq_affinity.sh ens2np0
+#bash /home/igorcapeletti/github/nfp-drv-kmods/tools/set_irq_affinity.sh ens2np0
 #--------------------------------------------------------
 
 
@@ -194,6 +193,7 @@ if [ $modo_execucao_programa_ebpf = "normal" ]; then
   done
 elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
   programa_bpf="advanced03-AF_XDP"
+  PID=''
   #vai iterar nos modos combined escolhidos
   for it_combined in "1" "2" "4" "8"; do
     echo -e "\n\n"
@@ -203,9 +203,9 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
       for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
         #maquina gerador de trafego ira reiniciar via comando por ssh 
         #a cada 36 execucoes para nao bugar o gerador
-        if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
+        if [[ $it_experimento == "0" || $it_experimento == "3200" ]]; then
           ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-          sleep "120"
+          sleep "150"
         fi
 
         nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
