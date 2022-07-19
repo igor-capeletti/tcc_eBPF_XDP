@@ -271,7 +271,6 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
 
           echo $PASS | sudo -S ./af_xdp_user --dev $nome_interface --filename af_xdp_kern.o --force --progsec xdp_sock --skb-mode &
           PID=$!
-          sleep "5"
 
           #vai gerar trafego para cada um dos tamanhos de pacotes especificados
           for it_tam_packet in "64" "128" "256" "512" "1024" "1500"; do
@@ -309,7 +308,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
               cont=$((cont+1))
             done
           done
-          echo $PASS | sudo -S kill -INT $PID
+          echo $PASS | sudo -S killall -INT af_xdp_user
         done
       done
     fi
