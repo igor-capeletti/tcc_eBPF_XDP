@@ -35,6 +35,7 @@ usuario= "igorubuntu"
 local_res_exerimentos= f"/home/{usuario}/github/tcc_eBPF_XDP/experimentos"
 #nome_pasta_resultados= "resultados1"
 nome_pasta_resultados= "resultados2"
+#nome_pasta_resultados= "resultados_af_xdp1"
 
 #1) analiza arquivos salvos pelo gerador de trafego ----------------------------------------------------------
 raiz= Path.home() / f"{local_res_exerimentos}/{nome_pasta_resultados}/gerador"
