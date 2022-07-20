@@ -66,10 +66,10 @@ if [ $modo_execucao_programa_ebpf = "normal" ]; then
     if [ $tipo_programa_ebpf = "for" ]; then
       for it_experimento in "0" "1" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
         #reinicia maquina geradora de trafego a cada 18 execucoes aqui, para nao bugar o gerador
-        if [[ $it_experimento == "0" || $it_experimento == "100" || $it_experimento == "400" || $it_experimento == "1600" || $it_experimento == "6400" ]]; then
-          ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-          sleep "130"
-        fi
+        #if [[ $it_experimento == "0" || $it_experimento == "100" || $it_experimento == "400" || $it_experimento == "1600" || $it_experimento == "6400" ]]; then
+        ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+        sleep "130"
+        #fi
         
 
         nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
@@ -203,10 +203,10 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
       for it_experimento in "0" "1" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
         #maquina gerador de trafego ira reiniciar via comando por ssh 
         #a cada 36 execucoes para nao bugar o gerador
-        if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
-          ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
-          sleep "140"
-        fi
+        #if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
+        ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
+        sleep "120"
+        #fi
 
         nome_arq_algoritmo="for_"$cont_inicial"_a_$it_experimento.c"
         pasta_resultado="for_"$cont_inicial"_a_$it_experimento"
