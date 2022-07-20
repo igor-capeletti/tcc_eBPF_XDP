@@ -200,7 +200,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
     echo $PASS | sudo -S ethtool -L $nome_interface combined $it_combined
 
     if [ $tipo_programa_ebpf = "for" ]; then
-      for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
+      for it_experimento in "0" "1" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
         #maquina gerador de trafego ira reiniciar via comando por ssh 
         #a cada 36 execucoes para nao bugar o gerador
         if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then

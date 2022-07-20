@@ -26,12 +26,15 @@ if __name__ == '__main__':
             i=0
             for linha_arq_orig in arq_af_xdp_original:
               if(i == 295):
-                arq_algoritmo.write('\tint i=0;\n')
-                arq_algoritmo.write('\tint j=0;\n')
-                arq_algoritmo.write(f'\tfor(i={args.inicio}; i<{args.fim}; i++)')
-                arq_algoritmo.write('\t{\n')
-                arq_algoritmo.write('\t\tj= i+2;\n')
-                arq_algoritmo.write('\t}\n\tj+=10;\n')
+                if(args.fim == '0'):
+                  arq_algoritmo.write('\t\n')
+                else:
+                  arq_algoritmo.write('\tint i=0;\n')
+                  arq_algoritmo.write('\tint j=0;\n')
+                  arq_algoritmo.write(f'\tfor(i={args.inicio}; i<{args.fim}; i++)')
+                  arq_algoritmo.write('\t{\n')
+                  arq_algoritmo.write('\t\tj= i+2;\n')
+                  arq_algoritmo.write('\t}\n\tj+=10;\n')
               else:
                 arq_algoritmo.write(linha_arq_orig)
               i= i+1
