@@ -155,7 +155,7 @@ if [ $modo_execucao_programa_ebpf = "normal" ]; then
             for it_var_ip in "0.0.0.255"; do
               #prints
               echo -e "\n\n\n"
-              echo "Experimento $cont/$((4*9*2*6)): ----------------------------------"
+              echo "Experimento $cont/$((4*10*2*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
@@ -279,7 +279,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
             for it_var_ip in "0.0.0.255"; do
               #prints
               echo -e "\n\n\n"
-              echo "Experimento $cont/$((4*9*6)): ----------------------------------"
+              echo "Experimento $cont/$((4*10*6)): ----------------------------------"
               echo "  Combined =  $it_combined"
               echo "  Algoritmo = $nome_arq_algoritmo"
               echo "  Modo Hook XDP = $it_modo_xdp"
