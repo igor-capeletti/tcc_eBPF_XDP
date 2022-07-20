@@ -1,17 +1,17 @@
-# started on Mon Jul 18 21:17:25 2022
+# started on Tue Jul 19 20:12:17 2022
 
 
  Performance counter stats for 'sleep 5':
 
-              1,16 msec task-clock                #    0,000 CPUs utilized          
-                 1      context-switches          #  861,088 /sec                   
-                 1      cpu-migrations            #  861,088 /sec                   
-                63      page-faults               #   54,249 K/sec                  
-         1.133.411      cycles                    #    0,976 GHz                    
-         1.012.174      instructions              #    0,89  insn per cycle         
-           206.522      branches                  #  177,834 M/sec                  
-             7.837      branch-misses             #    3,79% of all branches        
-           269.969      L1-dcache-loads           #  232,467 M/sec                  
+              1,08 msec task-clock                #    0,000 CPUs utilized          
+                 1      context-switches          #  922,767 /sec                   
+                 0      cpu-migrations            #    0,000 /sec                   
+                64      page-faults               #   59,057 K/sec                  
+         1.284.934      cycles                    #    1,186 GHz                    
+         1.123.119      instructions              #    0,87  insn per cycle         
+           225.861      branches                  #  208,417 M/sec                  
+             8.107      branch-misses             #    3,59% of all branches        
+           301.552      L1-dcache-loads           #  278,262 M/sec                  
      <not counted>      L1-dcache-load-misses                                         (0,00%)
      <not counted>      LLC-loads                                                     (0,00%)
      <not counted>      LLC-load-misses                                               (0,00%)
@@ -24,9 +24,9 @@
    <not supported>      L1-dcache-prefetches                                        
    <not supported>      L1-dcache-prefetch-misses                                   
 
-       5,002228662 seconds time elapsed
+       5,002097869 seconds time elapsed
 
-       0,002309000 seconds user
+       0,002118000 seconds user
        0,000000000 seconds sys
 
 

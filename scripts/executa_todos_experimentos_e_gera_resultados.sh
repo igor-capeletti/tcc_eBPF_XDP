@@ -203,7 +203,7 @@ elif [ $modo_execucao_programa_ebpf = "af_xdp" ]; then
       for it_experimento in "0" "100" "200" "400" "800" "1600" "3200" "6400" "12800"; do
         #maquina gerador de trafego ira reiniciar via comando por ssh 
         #a cada 36 execucoes para nao bugar o gerador
-        if [[ $it_experimento == "0" || $it_experimento == "3200" ]]; then
+        if [[ $it_experimento == "0" || $it_experimento == "400" || $it_experimento == "3200" ]]; then
           ssh $ssh_usuario_gerador@$ssh_ip_gerador "echo $PASS | sudo -S reboot" &
           sleep "140"
         fi

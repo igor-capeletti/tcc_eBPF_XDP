@@ -1,4 +1,4 @@
-# started on Mon Jul 18 23:04:38 2022
+# started on Tue Jul 19 22:11:31 2022
 
 
  Performance counter stats for 'sleep 5':
@@ -6,12 +6,12 @@
               0,70 msec task-clock                #    0,000 CPUs utilized          
                  1      context-switches          #    1,430 K/sec                  
                  0      cpu-migrations            #    0,000 /sec                   
-                64      page-faults               #   91,506 K/sec                  
-         1.726.582      cycles                    #    2,469 GHz                    
-         1.003.824      instructions              #    0,58  insn per cycle         
-           204.620      branches                  #  292,561 M/sec                  
-             8.085      branch-misses             #    3,95% of all branches        
-           267.769      L1-dcache-loads           #  382,850 M/sec                  
+                62      page-faults               #   88,660 K/sec                  
+         1.727.210      cycles                    #    2,470 GHz                    
+           991.955      instructions              #    0,57  insn per cycle         
+           202.176      branches                  #  289,112 M/sec                  
+             8.115      branch-misses             #    4,01% of all branches        
+           264.373      L1-dcache-loads           #  378,053 M/sec                  
      <not counted>      L1-dcache-load-misses                                         (0,00%)
      <not counted>      LLC-loads                                                     (0,00%)
      <not counted>      LLC-load-misses                                               (0,00%)
@@ -24,9 +24,9 @@
    <not supported>      L1-dcache-prefetches                                        
    <not supported>      L1-dcache-prefetch-misses                                   
 
-       5,001484052 seconds time elapsed
+       5,001520354 seconds time elapsed
 
-       0,001485000 seconds user
+       0,001506000 seconds user
        0,000000000 seconds sys
 
 

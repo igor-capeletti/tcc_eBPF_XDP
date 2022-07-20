@@ -1,17 +1,17 @@
-# started on Mon Jul 18 21:04:46 2022
+# started on Tue Jul 19 19:57:58 2022
 
 
  Performance counter stats for 'sleep 5':
 
-              0,99 msec task-clock                #    0,000 CPUs utilized          
-                 1      context-switches          #    1,015 K/sec                  
+              0,73 msec task-clock                #    0,000 CPUs utilized          
+                 1      context-switches          #    1,379 K/sec                  
                  0      cpu-migrations            #    0,000 /sec                   
-                63      page-faults               #   63,945 K/sec                  
-           999.664      cycles                    #    1,015 GHz                    
-         1.003.141      instructions              #    1,00  insn per cycle         
-           204.109      branches                  #  207,172 M/sec                  
-             7.359      branch-misses             #    3,61% of all branches        
-           267.515      L1-dcache-loads           #  271,529 M/sec                  
+                64      page-faults               #   88,262 K/sec                  
+         1.143.073      cycles                    #    1,576 GHz                    
+         1.014.809      instructions              #    0,89  insn per cycle         
+           206.325      branches                  #  284,541 M/sec                  
+             7.792      branch-misses             #    3,78% of all branches        
+           271.142      L1-dcache-loads           #  373,930 M/sec                  
      <not counted>      L1-dcache-load-misses                                         (0,00%)
      <not counted>      LLC-loads                                                     (0,00%)
      <not counted>      LLC-load-misses                                               (0,00%)
@@ -24,9 +24,9 @@
    <not supported>      L1-dcache-prefetches                                        
    <not supported>      L1-dcache-prefetch-misses                                   
 
-       5,001884648 seconds time elapsed
+       5,001377346 seconds time elapsed
 
-       0,001920000 seconds user
+       0,001358000 seconds user
        0,000000000 seconds sys
 
 
