@@ -33,7 +33,8 @@ if __name__ == '__main__':
                   arq_algoritmo.write('\tint j=0;\n')
                   arq_algoritmo.write(f'\tfor(i={args.inicio}; i<{args.fim}; i++)')
                   arq_algoritmo.write('\t{\n')
-                  arq_algoritmo.write('\t\tj= i+2;\n')
+                  arq_algoritmo.write('\tmemcpy(eth->h_source, tmp_mac, ETH_ALEN);\n')
+                  arq_algoritmo.write('\t\tj= i+1;\n')
                   arq_algoritmo.write('\t}\n\tj+=10;\n')
               else:
                 arq_algoritmo.write(linha_arq_orig)
