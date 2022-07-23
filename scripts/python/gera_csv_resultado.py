@@ -34,8 +34,12 @@ usuario= "igorubuntu"
 
 local_res_exerimentos= f"/home/{usuario}/github/tcc_eBPF_XDP/experimentos"
 #nome_pasta_resultados= "resultados1"
-nome_pasta_resultados= "resultados2"
+#nome_pasta_resultados= "resultados2"
+#nome_pasta_resultados= "resultados3"
+#nome_pasta_resultados= "resultados4"
+
 #nome_pasta_resultados= "resultados_af_xdp1"
+nome_pasta_resultados= "resultados_af_xdp2"
 
 #1) analiza arquivos salvos pelo gerador de trafego ----------------------------------------------------------
 raiz= Path.home() / f"{local_res_exerimentos}/{nome_pasta_resultados}/gerador"
@@ -84,7 +88,7 @@ for pasta in lista_pastas:
 
 #coletar os dados dos arquivos e salvar em um arquivo principal -----------------
 arq_resultado_geral_gerador= open(f'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_gerador.csv', 'w')
-arq_resultado_geral_gerador.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate\n")
+arq_resultado_geral_gerador.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,rx_packets,rx_packet_rate_avg,rx_packet_rate,latencymean\n")
 
 for pasta in lista_pastas:
   os.chdir(pasta)
@@ -110,8 +114,9 @@ for pasta in lista_pastas:
     rx_packets= df_novo.rxpackets[0]
     rx_packet_rate_avg= df_novo.rxpacketrateavg[0]
     rx_packet_rate= df_novo.rxpacketrate[0]
+    latencymean= df_novo.latencymean[0]
 
-    arq_resultado_geral_gerador.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{rx_packets},{rx_packet_rate_avg},{rx_packet_rate}\n")
+    arq_resultado_geral_gerador.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{rx_packets},{rx_packet_rate_avg},{rx_packet_rate},{latencymean}\n")
 arq_resultado_geral_gerador.close()
 print(f"Todos os resultados do gerador foram salvos no arquivo:\n\t'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_gerador.csv'\n")
 
