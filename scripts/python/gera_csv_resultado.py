@@ -149,38 +149,55 @@ for file in glob.glob('*.txt'):
     dados_linha= linha.replace(' ','')
     if(i == 5):
       task_clock= dados_linha.split("msectask-clock")[0]
+      task_clock= task_clock.replace('<notcounted>','0')
     elif(i == 6):
       context_switches= dados_linha.split("context-switches")[0]
+      context_switches= context_switches.replace('<notcounted>','0')
     elif(i == 7):
       cpu_migrations= dados_linha.split("cpu-migrations")[0]
+      cpu_migrations= cpu_migrations.replace('<notcounted>','0')
     elif(i == 8):
       page_faults= dados_linha.split("page-faults")[0]
+      page_faults= page_faults.replace('<notcounted>','0')
     elif(i == 9):
       cycles= dados_linha.split("cycles")[0]
+      cycles= cycles.replace('<notcounted>','0')
     elif(i == 10):
       instructions= dados_linha.split("instructions")[0]
+      instructions= instructions.replace('<notcounted>','0')
     elif(i == 11):
       branches= dados_linha.split("branches")[0]
+      branches= branches.replace('<notcounted>','0')
     elif(i == 12):
       branch_misses= dados_linha.split("branch-misses")[0]
+      branch_misses= branch_misses.replace('<notcounted>','0')
     elif(i == 13):
       L1_dcache_loads= dados_linha.split("L1-dcache-loads")[0]
+      L1_dcache_loads= L1_dcache_loads.replace('<notcounted>','0')
     elif(i == 14):
       L1_dcache_load_misses= dados_linha.split("L1-dcache-load-misses")[0]
+      L1_dcache_load_misses= L1_dcache_load_misses.replace('<notcounted>','0')
     elif(i == 15):
       LLC_loads= dados_linha.split("LLC-loads")[0]
+      LLC_loads= LLC_loads.replace('<notcounted>','0')
     elif(i == 16):
       LLC_load_misses= dados_linha.split("LLC-load-misses")[0]
+      LLC_load_misses= LLC_load_misses.replace('<notcounted>','0')
     elif(i == 18):
       L1_icache_load_misses= dados_linha.split("L1-icache-load-misses")[0]
+      L1_icache_load_misses= L1_icache_load_misses.replace('<notcounted>','0')
     elif(i == 19):
       dTLB_loads= dados_linha.split("dTLB-loads")[0]
+      dTLB_loads= dTLB_loads.replace('<notcounted>','0')
     elif(i == 20):
       dTLB_load_misses= dados_linha.split("dTLB-load-misses")[0]
+      dTLB_load_misses= dTLB_load_misses.replace('<notcounted>','0')
     elif(i == 21):
       iTLB_loads= dados_linha.split("iTLB-loads")[0]
+      iTLB_loads= iTLB_loads.replace('<notcounted>','0')
     elif(i == 22):
       iTLB_load_misses= dados_linha.split("iTLB-load-misses")[0]
+      iTLB_load_misses= iTLB_load_misses.replace('<notcounted>','0')
 
     i= i+1
   arquivo_txt.close()
