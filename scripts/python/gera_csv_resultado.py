@@ -124,7 +124,7 @@ print(f"Todos os resultados do gerador foram salvos no arquivo:\n\t'{local_res_e
 #2) analiza arquivos salvos pelo perf na maquina de execucao dos programas eBPF/XDP ------------------------
 pasta= f"{local_res_exerimentos}/{nome_pasta_resultados}/perf"
 arq_resultado_geral_perf= open(f'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_perf.csv', 'w')
-arq_resultado_geral_perf.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,task_clock,context_switches,cpu_migrations,page_faults,cycles,instructions,branches,branch_misses,L1_dcache_loads,L1_dcache_load_misses,LLC_loads,LLC_load_misses,L1_icache_load_misses,dTLB_loads,dTLB_load_misses,iTLB_loads,iTLB_load_misses\n")
+arq_resultado_geral_perf.write("combined,algoritmo,packet_size,hook_ebpf,var_ip,timeout,context_switches,cpu_migrations,page_faults,cycles,instructions,branches,branch_misses,L1_dcache_loads,L1_dcache_load_misses,LLC_loads,LLC_load_misses,L1_icache_load_misses,dTLB_loads,dTLB_load_misses,iTLB_loads,iTLB_load_misses\n")
 
 os.chdir(pasta)
 for file in glob.glob('*.txt'):
@@ -147,10 +147,7 @@ for file in glob.glob('*.txt'):
   i= 0
   for linha in arquivo_txt:
     dados_linha= linha.replace(' ','')
-    if(i == 5):
-      task_clock= dados_linha.split("msectask-clock")[0]
-      task_clock= task_clock.replace('<notcounted>','0')
-    elif(i == 6):
+    if(i == 6):
       context_switches= dados_linha.split("context-switches")[0]
       context_switches= context_switches.replace('<notcounted>','0')
     elif(i == 7):
@@ -201,7 +198,7 @@ for file in glob.glob('*.txt'):
 
     i= i+1
   arquivo_txt.close()
-  arq_resultado_geral_perf.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{task_clock},{context_switches},{cpu_migrations},{page_faults},{cycles},{instructions},{branches},{branch_misses},{L1_dcache_loads},{L1_dcache_load_misses},{LLC_loads},{LLC_load_misses},{L1_icache_load_misses},{dTLB_loads},{dTLB_load_misses},{iTLB_loads},{iTLB_load_misses}\n")
+  arq_resultado_geral_perf.write(f"{combined},{algoritmo},{packet_size},{hook_ebpf},{var_ip},{timeout},{context_switches},{cpu_migrations},{page_faults},{cycles},{instructions},{branches},{branch_misses},{L1_dcache_loads},{L1_dcache_load_misses},{LLC_loads},{LLC_load_misses},{L1_icache_load_misses},{dTLB_loads},{dTLB_load_misses},{iTLB_loads},{iTLB_load_misses}\n")
 arq_resultado_geral_perf.close()
 print(f"Todos os resultados do perf foram salvos no arquivo:\n\t'{local_res_exerimentos}/{nome_pasta_resultados}/resultado_geral_perf.csv'\n")
 
