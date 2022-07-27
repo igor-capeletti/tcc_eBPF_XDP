@@ -147,6 +147,7 @@ for file in glob.glob('*.txt'):
   i= 0
   for linha in arquivo_txt:
     dados_linha= linha.replace(' ','')
+    dados_linha= dados_linha.replace('.','')
     if(i == 6):
       context_switches= dados_linha.split("context-switches")[0]
       context_switches= context_switches.replace('<notcounted>','0')
