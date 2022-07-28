@@ -458,7 +458,7 @@ function statsRx:write(filename, portId)
     local time = mg.getTime() - globalStartTime
 
     local statsString = string.format(
-        "%6.3f,%13u,%18.2f,%18.2f,%13u,%18.2f,%18.2f,%18.2f,%5u,%5u\n", 
+        "%6.3f,%13u,%18.2f,%18.2f,%13u,%18.2f,%18.2f,%32.10f,%5u,%5u\n", 
         time                                                ,
         0                                                   ,
         0                                                   ,
