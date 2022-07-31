@@ -19,4 +19,4 @@ Nossos resultados mostraram que todos os modos **XDP** avaliados conseguem excel
 
 ### Algumas das análises realizadas:
 
-<img src="[/graficos/vazao_XDP_x_packet_size%40baseline.pdf)]" alt="algo"/>
+<img src="/graficos/vazao_XDP_x_packet_size@baseline.pdf" alt="algo"/>
