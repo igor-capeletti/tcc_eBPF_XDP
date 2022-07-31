@@ -16,3 +16,7 @@ Portanto realizamos avaliações de desempenho como Latência, Taxa de Transfer�
 Em nosso trabalho, estudamos o paradigma **SDN** e o plano de dados programável com **eBPF**/**XDP**. Em seguida, realizamos o levantamento dos principais trabalhos relacionados com **eBPF**/**XDP** e apresentamos a metodologia utilizada para realização dos experimentos e avaliações. 
     
 Nossos resultados mostraram que todos os modos **XDP** avaliados conseguem excelentes taxas de transferência ao processar grandes pacotes de rede. Para a métrica de Latência nossos resultados mostraram que em todos os modos **XDP** e para a maioria dos tamanhos de pacotes, ao aumentarmos a quantidade de acessos à memória, o tempo de Latência também aumenta. Quanto ao uso de CPU, todos os modos **XDP** tiveram baixas taxas de uso dos núcleos ao utilizar mais filas TX/RX para processar tráfegos com grandes pacotes de rede. Nas avaliações de número de instruções, número de branches, número de load hits e load misses, os resultados mostraram que não ocorreram diferenças de comportamento entre os diferentes experimentos.
+
+### Algumas das análises realizadas:
+
+<img src="[/graficos/vazao_XDP_x_packet_size%40baseline.pdf)]" alt="algo"/>
