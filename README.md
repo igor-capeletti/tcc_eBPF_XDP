@@ -6,6 +6,7 @@
 
 ### Ano: 2022/1
 
+### Resumo:
 O **eBPF** é um subsistema do **kernel** que filtra os pacotes de rede nos dispositivos do plano de dados com o auxílio do **Hook** **XDP**. O **Hook** **XDP** permite que programas **eBPF** realizem o processamento dos pacotes de rede no espaço do usuário, no espaço do **kernel**, no driver das placas e também no hardware das placas de rede. Apesar das iniciativas de avaliar o desempenho de programas **eBPF**, as análises existentes ainda não avaliam a execução de diversos programas **eBPF** processando diferentes tamanhos de pacotes para todas as abordagens existentes do **Hook** **XDP**. 
 
 Este trabalho tem o propósito de analisar as capacidades e limitações que os programas **eBPF** atingem processando pacotes em diferentes abordagens do **Hook** **XDP** com SmartNICs, além de servir como objeto de estudo para a área.
