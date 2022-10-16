@@ -38,4 +38,6 @@ Núcleos lógicos | 16
 Memória RAM | 32 GB
 Interface de Rede | Netronome SmartNIC Agilio CX 2x10GbE de 10 Gbit/s
 
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/imagens/dell_t440.jpg' width=300/>
+
 Um dos servidores é nosso Device Under Test (DUT) – ou seja, o servidor no qual os programas eBPFs/XDPs são carregados – e o outro é nosso gerador de tráfego. Os servidores são conectados diretamente através de cabos DAC de 10Gbit/s. 
