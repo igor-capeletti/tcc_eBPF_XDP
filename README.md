@@ -80,3 +80,47 @@ No servidor DUT, em que executamos os programas eBPF e AF_XDP, utilizase as ferr
 
 ## Resultados
 Tivemos muitos resultados para mostrar e analisar, por isso, para melhor analise e compreensão dos resultados, direcionamos você para acessar o trabalho completo disponibilizado [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/Monografia.pdf) ou somente visualização dos gráficos [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/tree/main/graficos).
+
+### 1. Latência: 
+* Melhores quantidades de filas de processamento para cada Hook XDP (1 fila para modo AF_XDP, 8 filas para os modos Native e Generic).
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/latencia_melhores_filas_para_cada_hook_xdp.png' width=700/>
+
+### 2. Taxa de Transferência:
+* Melhores quantidades de filas de processamento para cada Hook XDP (1 fila para modo AF_XDP, 8 filas para os modos Native e Generic):
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/vazao_packet_size_x_algoritmo%40combined_melhor_por_xdp.png' width=700/>
+
+---
+
+* Pacotes de tamanho pequeno (64 Bytes):
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/vazao_combined_x_algoritmo%4064.png' width=700/>
+
+---
+
+* Pacotes de tamanho médio (1024 Bytes):
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/vazao_combined_x_algoritmo%401024.png' width=700/>
+
+---
+
+* Pacotes de tamanho grande (1500 Bytes):
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/vazao_combined_x_algoritmo%401500.png' width=700/>
+
+---
+
+* Algoritmo Baseline (algoritmo que obtêm os melhores desempenhos para todos os casos, ou seja, somente reencaminha os pacote para a origem):
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/vazao_XDP_x_packet_size%40baseline.png' width=800/>
+
+
+### 3. Uso de CPU: 
+* Pacotes de tamanho pequeno (64 Bytes) sendo processados com 8 filas:
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/uso_CPU_ID_CPU_x_algoritmo%4064_combined_8.png' width=700/>
+
+---
+
+* Pacotes de tamanho médio (1024 Bytes) sendo processados com 8 filas:
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/uso_CPU_ID_CPU_x_algoritmo%401024_combined_8.png' width=700/>
+
+---
+
+* Pacotes de tamanho grande (1500 Bytes) sendo processados com 8 filas:
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/uso_CPU_ID_CPU_x_algoritmo%401500_combined_8.png' width=700/>
+
