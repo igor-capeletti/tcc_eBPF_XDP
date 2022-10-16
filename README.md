@@ -3,14 +3,12 @@
 * ### Autor: Ígor Ferrazza Capeletti
 * ### [Universidade Federal do Pampa](https://unipampa.edu.br/alegrete/), Alegrete-RS-Brasil - 2022/1
 
-O trabalho completo pode ser acessado [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/Monografia.pdf).
-
 
 ## Tecnologias utilizadas
 
 Linguagem de programação | Utilização
------------------------- | --- 
-Python                   | Automatizar a criação de programas eBPF(em linguagem C); <br> Automatizar a execução dos experimentos; <br> Tratamentos dos dados
+:------------------------: | --- 
+Python (Jupyter Notebook) | Automatizar a criação de programas eBPF(em linguagem C); <br> Automatizar a execução dos experimentos; <br> Tratamentos dos dados
 Shell Script             | Configurar a rede, acessos ssh e as interfaces dos experimentos; <br> Carregar e executar os programas eBPF nas interfaces de rede; <br> Coletar os dados dos experimentos via ferramenta [Perf](https://perf.wiki.kernel.org/) e [Sar](https://github.com/sysstat/sysstat);
 C                        | Criação dos programas para realizar o tratamento dos dados. Os programas escritos em C são compilados para programas eBPF;
 Lua                      | Geração dos pacotes de rede; <br> Coleta de alguns sobre os pacotes enviados e recebidos;
@@ -19,13 +17,19 @@ Lua                      | Geração dos pacotes de rede; <br> Coleta de alguns 
 ## Sobre o eBPF
 O **eBPF** é um subsistema do **kernel** que filtra os pacotes de rede nos dispositivos do plano de dados com o auxílio do *Hook* **XDP**. O *Hook* **XDP** permite que programas **eBPF** realizem o processamento dos pacotes de rede no espaço do usuário, no espaço do **kernel**, no driver das placas e também no hardware das placas de rede. Apesar das iniciativas de avaliar o desempenho de programas **eBPF**, as análises existentes ainda não avaliam a execução de diversos programas **eBPF** processando diferentes tamanhos de pacotes para todas as abordagens existentes do *Hook* **XDP**. 
 
+Na figura a seguir são ilustrados os fluxos de tratamento dos pacotes de rede para os diferentes Hooks XDP. Primeiro, o pacote de rede chega na entrada RX da SmartNIC e é encaminhado diretamente para o XDP que está ativo na interface. Esse pacote é processado pelo programa eBPF que está carregado no XDP e em seguida é encaminhado para a próxima camada de processamento, ou é encaminhado para a saída TX da SmartNIC. Caso o pacote não foi encaminhado para a saída TX da interface, este vai ser direcionado para as pilhas de rede do kernel e posteriormente encaminhado para as aplicações no espaço do usuário. Se o modo AF_XDP estiver ativo, o programa XDP encaminha o pacote direto para o espaço do usuário, sem passar pelas pilhas de rede do kernel.
+
+<img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/imagens/processamento_do_pacote.png' width=400/>
+
+
+## Objetivos do Trabalho
+Este trabalho tem o propósito de **analisar** as **capacidades** e **limitações** de **Latência**, **Taxa de Transferência** e **uso de CPU** que os programas **eBPF** atingem processando pacotes em diferentes abordagens do *Hook* **XDP** com SmartNICs.
+
+
 ## Estudos Realizados
 * Paradigma **SDN** 
 * Plano de dados programável com **eBPF/XDP**
 * Levantamento dos principais trabalhos relacionados com **eBPF/XDP**
-
-## Objetivos do Trabalho
-Este trabalho tem o propósito de **analisar** as **capacidades** e **limitações** de **Latência**, **Taxa de Transferência** e **uso de CPU** que os programas **eBPF** atingem processando pacotes em diferentes abordagens do *Hook* **XDP** com SmartNICs.
 
 
 ## Metodologia dos Experimentos
@@ -69,6 +73,10 @@ A ferramenta Netronome Packet Generator do gerador MoonGen utilizado no ambiente
 Bytes. A partir destas informações, escolhemos gerar tráfegos com os tamanhos de pacotes mais comuns utilizados na internet, ou seja, pacotes de 64B, 128B, 256B, 512B, 1024B e 1500B.
 
 ### 4. Coleta dos Dados
+Durante cada experimento, os dados dos dois servidores são coletados. No servidor responsável pela geração do tráfego são coletados os dados referente a quantidade de
+pacotes enviados/recebidos, a taxa de envio/recepção, a taxa média de envio/recepção e a Latência média dos pacotes. O próprio MoonGen coleta esses dados a cada segundo que o gerador enviou/recebeu o tráfego de pacotes e salva em um arquivo de logs.
 
+No servidor DUT, em que executamos os programas eBPF e AF_XDP, utilizase as ferramentas Perf 10 e Sar11 para coletar as informações durante o processamento dos pacotes recebidos. Com a ferramenta Sar, coleta-se os dados relacionados à porcentagem de uso dos núcleos do processador. Similarmente, por meio da ferramenta Perf, coleta-se as informações como número de instruções por ciclo, número de acertos/erros de desvios (branches) e número de acertos/erros de acesso à cache L1.
 
 ## Resultados
+Tivemos muitos resultados para mostrar e analisar, por isso, para melhor analise e compreensão dos resultados, direcionamos você para acessar o trabalho completo disponibilizado [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/Monografia.pdf) ou somente visualização dos gráficos [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/tree/main/graficos).
