@@ -1,22 +1,41 @@
-# Monografia: Análise de Desempenho de Aplicações eBPF/XDP em Planos de Dados Programáveis
+## Monografia apresentada ao Curso de Ciência da Computação da Universidade Federal do Pampa, como requisito parcial para obtenção do Título de Bacharel em Ciência da Computação 
+* ### Título: Análise de Desempenho de Aplicações eBPF/XDP em Planos de Dados Programáveis
+* ### Autor: Ígor Ferrazza Capeletti
+* ### [Universidade Federal do Pampa](https://unipampa.edu.br/alegrete/), Alegrete-RS-Brasil - 2022/1
 
-### Autor: Ígor Ferrazza Capeletti
-
-### Universidade: Universidade Federal do Pampa, Alegrete-RS-Brasil
-
-### Ano: 2022/1
+O trabalho completo pode ser acessado [aqui](https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/Monografia.pdf).
 
 
+## Tecnologias utilizadas
+
+Linguagem de programação | Utilização
+------------------------ | --- 
+Python                   | Automatizar a criação de programas eBPF(em linguagem C); <br> Automatizar a execução dos experimentos; <br> Tratamentos dos dados
+Shell Script             | Configurar a rede, acessos ssh e as interfaces dos experimentos; <br> Carregar e executar os programas eBPF nas interfaces de rede; <br> Coletar os dados dos experimentos via ferramenta [Perf](https://perf.wiki.kernel.org/) e [Sar](https://github.com/sysstat/sysstat);
+C                        | Criação dos programas para realizar o tratamento dos dados. Os programas escritos em C são compilados para programas eBPF;
+Lua                      | Geração dos pacotes de rede; <br> Coleta de alguns sobre os pacotes enviados e recebidos;
+
+
+## Sobre o eBPF
 O **eBPF** é um subsistema do **kernel** que filtra os pacotes de rede nos dispositivos do plano de dados com o auxílio do *Hook* **XDP**. O *Hook* **XDP** permite que programas **eBPF** realizem o processamento dos pacotes de rede no espaço do usuário, no espaço do **kernel**, no driver das placas e também no hardware das placas de rede. Apesar das iniciativas de avaliar o desempenho de programas **eBPF**, as análises existentes ainda não avaliam a execução de diversos programas **eBPF** processando diferentes tamanhos de pacotes para todas as abordagens existentes do *Hook* **XDP**. 
 
-Este trabalho tem o propósito de analisar as capacidades e limitações que os programas **eBPF** atingem processando pacotes em diferentes abordagens do *Hook* **XDP** com SmartNICs.
+## Estudos Realizados
+* Paradigma **SDN** 
+* Plano de dados programável com **eBPF/XDP**
+* Levantamento dos principais trabalhos relacionados com **eBPF/XDP**
 
-Portanto realizamos avaliações de desempenho como Latência, Taxa de Transferência e uso de CPU para as execuções de diversos programas **eBPF** em SmartNICs com suporte à todos os *Hooks** **XDP**. Em nosso trabalho, estudamos o paradigma **SDN** e o plano de dados programável com **eBPF/XDP**. Em seguida, realizamos o levantamento dos principais trabalhos relacionados com **eBPF/XDP** e apresentamos a metodologia utilizada para realização dos experimentos e avaliações. Nossos resultados mostraram que os modos **XDP** *Generic* e *Native* conseguiram manter a Taxa de Transferência máxima da SmartNIC ao processar grandes pacotes com algoritmos de até 3200 acessos à memória. O modo *AF\_XDP* também alcançou boas taxas de transferência ao processar grandes pacotes, mas somente para algoritmos com até 100 acessos à memória. 
-%
-O modo **XDP** *Generic* consegue manter mínima Latência ao processar pacotes com até 1600 acessos à memória. Os modos **XDP** *Native* e *AF\_XDP* conseguem realizar até 3200 acessos à memória com baixa Latência.
+## Objetivos do Trabalho
+Este trabalho tem o propósito de **analisar** as **capacidades** e **limitações** de **Latência**, **Taxa de Transferência** e **uso de CPU** que os programas **eBPF** atingem processando pacotes em diferentes abordagens do *Hook* **XDP** com SmartNICs.
 
-Ao avaliar o uso de CPU, percebemos que ao processar milhões de pacotes pequenos, o uso dos núcleos fica sempre em 100% devido às milhões de interrupções geradas ao CPU. Quando aumentamos o tamanho de cada pacote, a quantidade total de pacotes diminui consideravelmente, mostrando que a porcentagem de uso de todos os núcleos diminui devido a grande diminuição de interrupções geradas ao CPU.
+## Metodologia dos Experimentos
+### 1. Ambiente de Avaliação
+Ambiente experimental com dois servidores Dell T440, ambos com os mesmos componentes descritos abaixo:
+Componentes | Especificação
+----------- | ------
+Processador | Intel Xeon 4214R
+Núcleos físicos | 8 
+Núcleos lógicos | 16
+Memória RAM | 32 GB
+Interface de Rede | Netronome SmartNIC Agilio CX 2x10GbE de 10 Gbit/s
 
-Nas avaliações de número de instruções, número de branches, número de load hits e load misses, os resultados mostraram que não ocorreram diferenças de comportamento entre os diferentes experimentos.
- 
-**Palavras-chave**: Processamento de Pacotes com **eBPF/XDP**, Hook **XDP**, *Software-Defined Network(SDN)*, Plano de Dados Programável
+Um dos servidores é nosso Device Under Test (DUT) – ou seja, o servidor no qual os programas eBPFs/XDPs são carregados – e o outro é nosso gerador de tráfego. Os servidores são conectados diretamente através de cabos DAC de 10Gbit/s. 
