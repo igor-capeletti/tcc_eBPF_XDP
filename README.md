@@ -8,7 +8,7 @@
 
 Linguagem de programação | Utilização
 :------------------------: | --- 
-Python (Jupyter Notebook) | Automatizar a criação de programas eBPF(em linguagem C); <br> Automatizar a execução dos experimentos; <br> Tratamentos dos dados
+Python (Jupyter Notebook) | Automatizar a criação de programas eBPF(em linguagem C); <br> Automatizar a execução dos experimentos; <br> Organização e normalização dos resultados; <br> Geração dos gráficos a partir dos resultados;
 Shell Script             | Configurar a rede, acessos ssh e as interfaces dos experimentos; <br> Carregar e executar os programas eBPF nas interfaces de rede; <br> Coletar os dados dos experimentos via ferramenta [Perf](https://perf.wiki.kernel.org/) e [Sar](https://github.com/sysstat/sysstat);
 C                        | Criação dos programas para realizar o tratamento dos dados. Os programas escritos em C são compilados para programas eBPF;
 Lua                      | Geração dos pacotes de rede; <br> Coleta de alguns sobre os pacotes enviados e recebidos;
