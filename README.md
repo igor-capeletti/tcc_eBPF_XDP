@@ -124,3 +124,6 @@ Tivemos muitos resultados para mostrar e analisar, por isso, para melhor analise
 * Pacotes de tamanho grande (1500 Bytes) sendo processados com 8 filas:
 <img src='https://github.com/igor-capeletti/tcc_eBPF_XDP/blob/main/graficos/png/uso_CPU_ID_CPU_x_algoritmo%401500_combined_8.png' width=700/>
 
+---
+# Tutorial para reprodução de todos os processos realizados
+Em desenvolvimento ...
